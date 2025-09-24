@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Bengkel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007bff">
+</head>
+<body>
+  <div class="container">
+    <h2>📋 Aplikasi Bengkel Motor</h2>
+
+    <form id="formTransaksi">
+      <label>Tanggal:</label>
+      <input type="date" id="tanggal" required>
+
+      <label>Nama Mekanik:</label>
+      <select id="mekanik">
+        <option value="Alham">Alham</option>
+        <option value="Ical">Ical</option>
+      </select>
+
+      <label>Jenis Pekerjaan / Barang:</label>
+      <input type="text" id="pekerjaan" required>
+
+      <label>Harga (Rp):</label>
+      <input type="number" id="harga" required>
+
+      <button type="submit">Tambah Transaksi</button>
+    </form>
+
+    <div class="controls">
+      <button onclick="exportPDF()">Export PDF</button>
+      <button onclick="clearSelected()">Hapus Terpilih</button>
+    </div>
+
+    <div id="laporan"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    let transaksi = JSON.parse(localStorage.getItem("transaksi")) || [];
+
+    function renderLaporan() {
+      const laporanDiv = document.getElementById("laporan");
+      laporanDiv.innerHTML = "";
+
+      // Grouping per hari
+      const grouped = {};
+      transaksi.forEach(t => {
+        if (!grouped[t.tanggal]) grouped[t.tanggal] = [];
+        grouped[t.tanggal].push(t);
+      });
+
+      Object.keys(grouped).forEach(tgl => {
+        let section = document.createElement("div");
+        section.classList.add("laporan-harian");
+
+        let total = grouped[tgl].reduce((sum, item) => sum + item.harga, 0);
+
+        section.innerHTML = `
+          <h3>${tgl}</h3>
+          <table>
+            <tr>
+              <th>Pilih</th>
+              <th>Mekanik</th>
+              <th>Pekerjaan</th>
+              <th>Harga</th>
+            </tr>
+            ${grouped[tgl].map((t, i) => `
+              <tr>
+                <td><input type="checkbox" data-id="${t.id}"></td>
+                <td>${t.mekanik}</td>
+                <td>${t.pekerjaan}</td>
+                <td>Rp ${t.harga.toLocaleString()}</td>
+              </tr>`).join("")}
+          </table>
+          <p><b>Total Hari Ini: Rp ${total.toLocaleString()}</b></p>
+        `;
+        laporanDiv.appendChild(section);
+      });
+    }
+
+    document.getElementById("formTransaksi").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const tgl = document.getElementById("tanggal").value;
+      const mekanik = document.getElementById("mekanik").value;
+      const pekerjaan = document.getElementById("pekerjaan").value;
+      const harga = parseInt(document.getElementById("harga").value);
+
+      const id = Date.now();
+
+      transaksi.push({ id, tanggal: tgl, mekanik, pekerjaan, harga });
+      localStorage.setItem("transaksi", JSON.stringify(transaksi));
+
+      renderLaporan();
+      this.reset();
+    });
+
+    function clearSelected() {
+      if (!confirm("Yakin hapus transaksi terpilih?")) return;
+      const checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+      const idsToDelete = Array.from(checkboxes).map(cb => parseInt(cb.dataset.id));
+      transaksi = transaksi.filter(t => !idsToDelete.includes(t.id));
+      localStorage.setItem("transaksi", JSON.stringify(transaksi));
+      renderLaporan();
+    }
+
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+
+      const laporan = document.getElementById("laporan");
+      const canvas = await html2canvas(laporan);
+      const imgData = canvas.toDataURL("image/png");
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("laporan-bengkel.pdf");
+    }
+
+    renderLaporan();
+
+    // PWA Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registered"));
+    }
+  </script>
+</body>
+</html>
