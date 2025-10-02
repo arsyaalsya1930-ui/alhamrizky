@@ -1,10 +1,11 @@
 {
-  "name": "Aplikasi Bengkel Motor",
-  "short_name": "Bengkel",
+  "name": "Aplikasi Kasir Bengkel",
+  "short_name": "BengkelKu",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
