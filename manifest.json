@@ -1,11 +1,11 @@
 {
-  "name": "Aplikasi Kasir Bengkel",
-  "short_name": "BengkelKu",
-  "start_url": "./index.html",
+  "name": "Bengkel Promotor",
+  "short_name": "Bengkel",
+  "description": "Aplikasi pribadi untuk manajemen Bengkel Promotor.",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
-  "orientation": "portrait",
+  "background_color": "#f8f9fa",
+  "theme_color": "#0052cc",
   "icons": [
     {
       "src": "icon-192.png",

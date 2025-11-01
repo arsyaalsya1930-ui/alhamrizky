@@ -1,0 +1,1556 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bengkel Promotor — Modern</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+  /* ---------------------------
+     TEMA MODERN & CLEAN
+     --------------------------- */
+  :root{
+    --primary-1: #0052cc; 
+    --primary-2: #007bff;
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --muted: #5a657d;
+    --border: #e9ecef;
+    --radius: 12px;
+    --shadow-sm: 0 2px 4px rgba(0, 82, 204, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 82, 204, 0.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--bg);
+    color:#1a202c;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom: 70px; 
+  }
+  header{
+    background:var(--card);
+    color:var(--primary-1);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    /* gap:12px; */ /* Dihilangkan */
+    justify-content: center; /* Ditambahkan */
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1{font-size:18px;margin:0 0 2px 0;font-weight:600} /* Margin diubah */
+  .container{
+    padding:14px;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  
+  /* ---------------------------
+     PERUBAHAN: NAVIGASI BAWAH RAPI
+     --------------------------- */
+  nav#navTabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 10px rgba(0, 82, 204, 0.08);
+    display: flex;
+    justify-content: space-around;
+    /* PERUBAHAN: Padding vertikal ditambah agar lebih tinggi */
+    padding: 12px 0 10px 0; 
+    margin-bottom: 0;
+    overflow-x: hidden;
+    z-index: 100;
+  }
+  nav#navTabs .tab {
+    flex: 1;
+    flex-direction: column;
+    /* PERUBAHAN: Ukuran font teks diperbesar */
+    font-size: 12px; 
+    font-weight: 500;
+    padding: 0 4px; /* Padding horizontal saja */
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    box-shadow: none;
+    white-space: normal;
+    /* PERUBAHAN: Jarak ikon & teks ditambah */
+    gap: 5px; 
+    text-align: center;
+    -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap */
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+  nav#navTabs .tab i {
+    /* PERUBAHAN: Ikon diperbesar */
+    font-size: 20px; 
+    margin-bottom: 0;
+    /* PERUBAHAN: Tinggi disesuaikan dengan ikon */
+    height: 50px; 
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted); /* Warna ikon non-aktif */
+    transition: color 0.2s ease;
+  }
+  nav#navTabs .tab.active {
+    background: transparent;
+    color: var(--primary-1); /* Teks aktif */
+    font-weight: 600;
+    box-shadow: none;
+  }
+  /* Ikon di tab aktif juga ikut berwarna */
+  nav#navTabs .tab.active i {
+    color: var(--primary-1); 
+  }
+  nav#navTabs .tab:hover {
+    background: #f0f3f5;
+  }
+  /* ---------------------------
+     AKHIR NAVIGASI
+     --------------------------- */
+
+  /* Cards grid */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:14px;
+  }
+  @media(min-width:700px){ .grid{grid-template-columns:repeat(4,1fr)} }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .card h3{
+    margin:0 0 10px 0;
+    font-size:13px;
+    color:var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .card p{
+    margin:6px 0 0;
+    font-size: 20px;
+    font-weight:700;
+    color:var(--primary-1);
+    text-align: right;
+  }
+
+  /* Forms & tables */
+  form{
+    background:var(--card);
+    padding:14px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    border: 1px solid var(--border);
+    margin-bottom:12px
+  }
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight: 500;}
+  input[type="text"], input[type="date"], input[type="tel"], select, textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border: 1px solid var(--border);
+    margin-bottom:10px;
+    font-size:14px;
+    background: #fdfdfd;
+    transition: all 0.2s ease;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, input[type="tel"]:focus, select:focus, textarea:focus {
+    border-color: var(--primary-1);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+  }
+  textarea{min-height:70px;resize:vertical}
+  .row{display:flex;gap:10px}
+  .col{flex:1}
+  button{
+    background:var(--primary-1);
+    color:white;
+    border:0;
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    transition: background 0.2s ease;
+    height: 41px; /* Samakan tinggi tombol */
+  }
+  button:hover {
+    background: #0041a3;
+  }
+  button.ghost{
+    background:transparent;
+    color:var(--primary-1);
+    border:1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+  button.ghost:hover {
+    background: #f0f3f5;
+    border-color: #dbe4ee;
+  }
+  .small{padding:8px 10px;font-size:13px; height: auto;} /* override tinggi */
+
+  /* Tombol Ikon & Bahaya (Hapus) */
+  .btn-icon {
+    padding: 8px 10px;
+    font-size: 14px;
+    line-height: 1;
+    width: 36px;
+    height: 36px; /* Samakan tinggi */
+    text-align: center;
+  }
+  
+  /* PERUBAHAN: Warna tombol Hapus (Merah) */
+  .btn-danger {
+    color: #dc3545;
+    border-color: #f8d7da;
+  }
+  .btn-danger:hover {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* TAMBAHKAN: Warna tombol Edit (Hijau) */
+  .btn-edit {
+    color: #28a745;
+    border-color: #d4edda;
+  }
+  .btn-edit:hover {
+    background: #d4edda;
+    color: #155724;
+  }
+
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  th, td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:13px;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: 0; }
+  th{
+    background: #f9fafb;
+    color:var(--muted);
+    font-weight:600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .actions{
+    display: flex;
+    gap: 6px;
+  }
+  .actions button{margin-right:0}
+
+  /* Search & controls */
+  .controls{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .controls input[type="text"], .controls input[type="date"] {flex:1; margin-bottom: 0;}
+
+  /* Footer small */
+  footer{padding:20px 14px;text-align:center;color:var(--muted);font-size:13px; margin-top: 10px;}
+
+  /* Responsive tweaks */
+  @media(max-width:600px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .row{flex-direction:column}
+    .controls { flex-wrap: wrap; }
+    .controls input[type="date"] { min-width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- <i class="fa-solid fa-wrench"></i> Ikon dihilangkan untuk center -->
+  <div style="text-align: center; width: 100%;">
+    <h1>Bengkel Promotor</h1>
+    <span style="font-size: 12px; color: var(--muted); font-weight: 500; margin-top: -2px; display: block;">ALDEL Hotspot WiFi, Kalangkangan, Pantidoan, Jl.Hi Latto</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <section id="dashboardSection">
+    
+    <div style="margin-bottom:12px; display:flex; gap:8px;">
+      <button id="btnSyncSemua" style="flex:1;"><i class="fa-solid fa-cloud-arrow-down"></i> Sync Semua Data</button>
+      <button id="btnHapusLokal" class="ghost" style="flex:1;"><i class="fa-solid fa-trash"></i> Hapus Data Lokal</button>
+    </div>
+    
+    <form id="formFilterDashboard" class="card" style="margin-bottom: 12px; padding: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+      <div style="flex: 1 1 130px;">
+        <label>Dari Tanggal</label>
+        <input type="date" id="dashboardDari" style="margin-bottom: 0;">
+      </div>
+      <div style="flex: 1 1 130px;">
+        <label>Sampai Tanggal</label>
+        <input type="date" id="dashboardSampai" style="margin-bottom: 0;">
+      </div>
+      <button type="submit" id="btnTerapkanDashboard" style="flex: 1 1 auto;">Tampilkan</button>
+    </form>
+
+
+    <div class="grid" id="dashboardCards">
+      <div class="card">
+        <h3><i class="fa-solid fa-calendar-week"></i>Total Transaksi (Rentang)</h3>
+        <p id="cardTotalHari">Rp 0</p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-store"></i>Total Bagian Bengkel</h3>
+        <p id="cardBengkel">Rp 0</p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-users-gear"></i>Total Mekanik (Semua)</h3>
+        <p id="cardMekanikTotal">Rp 0</p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-wallet"></i>Total Keseluruhan</h3>
+        <p id="cardGrandTotal">Rp 0</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <h3 id="mekanikListTitle" style="margin: 15px 0 10px; font-size: 16px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px;">Pendapatan Per Mekanik (Rentang)</h3>
+      <div id="mekanikListArea"></div>
+    </div>
+  </section>
+
+  <section id="transaksiSection" style="display:none">
+    
+    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
+    <div class="controls" style="margin-bottom: 10px;">
+      <button id="btnTampilFormTransaksi" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Transaksi Baru</button>
+    </div>
+
+    <form id="formTransaksi" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form -->
+      <datalist id="listBarangJasa"></datalist>
+      
+      <div class="row">
+        <div class="col">
+          <label>Tanggal</label>
+          <input type="date" id="transTanggal" required>
+        </div>
+        <div class="col">
+          <label>Jenis</label>
+          <select id="transJenis">
+            <option value="Jasa">Jasa</option>
+            <option value="Barang">Barang</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Nama (Jasa / Barang) *</label>
+      <input type="text" id="transNama" required list="listBarangJasa">
+
+      <label>Harga *</label>
+      <input type="tel" id="transHarga" required inputmode="numeric">
+
+      <div id="transMekanikSection">
+        <label>Mekanik (opsional)</label>
+        <div style="display:flex;gap:8px">
+          <select id="transMekanik" style="flex:1"></select>
+          <button type="button" class="ghost small" id="btnTambahMekanik">+ Mekanik</button>
+        </div>
+
+        <label style="margin-top: 10px;">Persentase Mekanik (%) (opsional)</label>
+        <input type="tel" id="transPersen" placeholder="Contoh: 10" inputmode="numeric">
+      </div>
+
+      <!-- TAMBAHKAN: Area Hasil Kalkulasi Otomatis -->
+      <div id="transCalcResult" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+          <span style="color: var(--muted);">Bagian Mekanik:</span>
+          <strong id="calcMekanik" style="color: var(--primary-1);">Rp 0</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-top: 6px;">
+          <span style="color: var(--muted);">Bagian Bengkel:</span>
+          <strong id="calcBengkel" style="color: #1a202c;">Rp 0</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:15px"> <!-- margin-top ditambah -->
+        <button type="submit">Tambah Transaksi</button>
+        <button type="button" class="ghost" id="btnBatalTransaksi">Batal</button> <!-- UBAH: ID dan Teks -->
+      </div>
+    </form>
+
+    <div class="controls">
+      <input type="date" id="filterDari">
+      <input type="date" id="filterSampai">
+      <button class="ghost small" id="btnApplyFilter">Terapkan</button>
+      <button class="ghost small" id="btnResetFilter">Reset</button>
+    </div>
+    <div class="controls" style="margin-top: -2px;">
+      <input type="text" id="searchTrans" placeholder="Cari nama...">
+    </div>
+
+    <div style="overflow:auto">
+      <table id="tableTrans">
+        <thead><tr><th>Tgl</th><th>Jenis</th><th>Nama</th><th>Harga</th><th>Mekanik</th><th>%</th><th>Bagian Mekanik</th><th>Bagian Bengkel</th><th>Aksi</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="barangSection" style="display:none">
+    <form id="formBarang" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form by default -->
+      <label>Nama Barang *</label>
+      <input type="text" id="barangNama" required>
+      <label>Harga Jual</label>
+      <input type="tel" id="barangJual" inputmode="numeric">
+      <label>Harga Pasang</label>
+      <input type="tel" id="barangPasang" inputmode="numeric">
+      <label>Keterangan</label>
+      <textarea id="barangKeterangan" ></textarea>
+      <div style="display:flex;gap:8px">
+        <button type="submit">Tambah Barang</button>
+        <!-- UBAH: Ganti ID dan Teks Tombol -->
+        <button type="button" class="ghost" id="btnBatalBarang">Batal</button>
+      </div>
+    </form>
+
+    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
+    <div class="controls" style="margin-bottom: 10px;">
+      <button id="btnTampilFormBarang" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Barang Baru</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="searchBarang" placeholder="Cari barang...">
+      <button class="ghost small" id="btnSortBarang">Urut A→Z</button>
+    </div>
+
+    <div style="overflow:auto">
+      <table id="tableBarang">
+        <thead><tr><th>Nama</th><th>Harga Jual</th><th>Harga Pasang</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="jasaSection" style="display:none">
+    <form id="formJasa" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form by default -->
+      <label>Nama Jasa *</label>
+      <input type="text" id="jasaNama" required>
+      <label>Harga Jasa</label>
+      <input type="tel" id="jasaHarga" inputmode="numeric">
+      <label>Keterangan</label>
+      <textarea id="jasaKeterangan"></textarea>
+      <div style="display:flex;gap:8px">
+        <button type="submit">Tambah Jasa</button>
+        <button type="button" class="ghost" id="btnBatalJasa">Batal</button> <!-- UBAH: ID dan Teks -->
+      </div>
+    </form>
+
+    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
+    <div class="controls" style="margin-bottom: 10px;">
+      <button id="btnTampilFormJasa" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Jasa Baru</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="searchJasa" placeholder="Cari jasa...">
+      <button class="ghost small" id="btnSortJasa">Urut A→Z</button>
+    </div>
+
+    <div style="overflow:auto">
+      <table id="tableJasa">
+        <thead><tr><th>Nama Jasa</th><th>Harga</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="laporanSection" style="display:none">
+    <form id="formLaporan" style="margin-bottom:10px">
+      <div class="row">
+        <div class="col">
+          <label>Dari</label><input type="date" id="lapDari" required>
+        </div>
+        <div class="col">
+          <label>Sampai</label><input type="date" id="lapSampai" required>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button type="submit">Tampilkan Laporan</button>
+        <button type="button" class="ghost" id="btnExportLaporan">Export PDF</button>
+      </div>
+    </form>
+
+    <div class="card" id="lapSummary" style="margin-bottom:12px; text-align: left;">
+      <h3 style="margin-bottom:6px; font-size: 14px;">Ringkasan</h3>
+      <div id="lapRingkasan">Pilih rentang tanggal lalu klik "Tampilkan Laporan".</div>
+    </div>
+
+    <div class="card" style="padding:10px;margin-bottom:12px">
+      <canvas id="lapChart" height="140"></canvas>
+    </div>
+
+    <div style="overflow:auto">
+      <table id="tableLaporan">
+        <thead><tr><th>Tgl</th><th>Jenis</th><th>Nama</th><th>Harga</th><th>Mekanik</th><th>Bagian Mekanik</th><th>Bagian Bengkel</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer></footer>
+</div> <nav id="navTabs">
+  <div class="tab active" data-tab="dashboard"><i class="fa-solid fa-chart-simple"></i>Dashboard</div>
+  <div class="tab" data-tab="transaksi"><i class="fa-solid fa-cash-register"></i>Transaksi</div>
+  <div class="tab" data-tab="barang"><i class="fa-solid fa-box"></i>Barang</div>
+  <div class="tab" data-tab="jasa"><i class="fa-solid fa-clipboard-list"></i>Jasa</div>
+  <div class="tab" data-tab="laporan"><i class="fa-solid fa-file-lines"></i>Laporan</div>
+</nav>
+
+
+<script>
+/* ---------------------------
+  Helper utilities
+  --------------------------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+function todayISO(){ return new Date().toISOString().split('T')[0]; }
+
+function getStartOfMonthISO() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+}
+
+// Fungsi parsePriceTextToNumber (Tetap sama)
+function parsePriceTextToNumber(str){
+  if(str==null) return 0;
+  let s = String(str).toLowerCase().trim();
+  if(s === '') return 0;
+  s = s.replace(/\s+/g,' ');
+  let multiplier = 1;
+  if(/juta|jt|juta|juta/i.test(s)) multiplier = 1000000;
+  else if(/ribu|rb|k\b|k /i.test(s)) multiplier = 1000;
+  let numMatch = s.match(/[-+]?[0-9]*\.?[0-9]+/);
+  if(numMatch){
+    let num = parseFloat(numMatch[0].replace(',', '.'));
+    if(/juta|jt|juta/i.test(s) || /ribu|rb|k\b/i.test(s)) return Math.round(num * multiplier);
+    if(/[.,]/.test(s) && s.replace(/[^0-9]/g,'').length >= 4 && !(/[a-z]/i.test(s))){
+      let cleaned = s.replace(/\./g,'').replace(/,/g,'');
+      return parseInt(cleaned) || Math.round(num);
+    }
+    return Math.round(num);
+  }
+  let digits = s.replace(/[^0-9]/g,'');
+  return digits ? parseInt(digits) : 0;
+}
+
+function formatCurrency(num){
+  if(!num) return 'Rp 0';
+  return 'Rp ' + Number(num).toLocaleString('id-ID');
+}
+
+/* ---------------------------
+  Data storage (localStorage) (Tetap sama)
+  --------------------------- */
+const KEY = {
+  trans: 'bp_transaksi_v1',
+  barang: 'bp_barang_v1',
+  jasa: 'bp_jasa_v1',
+  mekanik: 'bp_mekanik_v1'
+};
+let transaksi = JSON.parse(localStorage.getItem(KEY.trans) || '[]');
+let barang = JSON.parse(localStorage.getItem(KEY.barang) || '[]');
+let jasa = JSON.parse(localStorage.getItem(KEY.jasa) || '[]');
+let mekanik = JSON.parse(localStorage.getItem(KEY.mekanik) || '[]');
+
+if(mekanik.length===0) {
+  mekanik = ['Alham','Ical','Zainal'];
+  localStorage.setItem(KEY.mekanik, JSON.stringify(mekanik));
+}
+
+/* ---------------------------
+  Navigation (Tetap sama)
+  --------------------------- */
+const tabs = $$('#navTabs .tab');
+tabs.forEach(t => t.addEventListener('click', ()=> {
+  tabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  const tab = t.dataset.tab;
+  ['dashboard','transaksi','barang','jasa','laporan'].forEach(id => {
+    document.getElementById(id+'Section').style.display = (id===tab)?'block':'none';
+  });
+  if(tab==='dashboard') renderDashboard();
+}));
+
+/* ---------------------------
+  Initialize defaults
+  --------------------------- */
+$('#transTanggal').value = todayISO();
+$('#dashboardDari').value = getStartOfMonthISO(); 
+$('#dashboardSampai').value = todayISO();
+$('#filterDari').value = '';
+$('#filterSampai').value = '';
+
+/* ---------------------------
+  Dashboard Sync/Clear Buttons (Tetap sama)
+  --------------------------- */
+$('#btnHapusLokal').addEventListener('click', () => {
+  Swal.fire({
+    title: 'Hapus Data Lokal?',
+    text: "Ini akan menghapus semua data di HP/komputer ini. Data di cloud aman. Anda perlu 'Sync' lagi untuk mengambilnya.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Hapus',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.removeItem(KEY.trans);
+      localStorage.removeItem(KEY.barang);
+      localStorage.removeItem(KEY.jasa);
+      localStorage.removeItem(KEY.mekanik);
+      Swal.fire('Berhasil Dihapus', 'Data lokal telah dibersihkan. Aplikasi akan dimuat ulang.', 'success')
+        .then(() => window.location.reload());
+    }
+  });
+});
+
+/* ---------------------------
+  Mekanik management
+  --------------------------- */
+function renderMekanikOptions(){
+  const sel = $('#transMekanik');
+  sel.innerHTML = '<option value="">-- Pilih Mekanik (opsional) --</option>';
+  mekanik.forEach(m => {
+    const opt = document.createElement('option'); opt.value = m; opt.textContent = m;
+    sel.appendChild(opt);
+  });
+  renderMekanikList();
+}
+function renderMekanikList(){
+  const tglDari = $('#dashboardDari').value;
+  const tglSampai = $('#dashboardSampai').value;
+  const area = $('#mekanikListArea');
+  const totals = {};
+  mekanik.forEach(m=>totals[m]=0);
+  
+  if (!tglDari || !tglSampai || tglDari > tglSampai) {
+     area.innerHTML = `<div style="text-align:center; color: var(--muted); padding: 20px 0;">Rentang tanggal tidak valid.</div>`;
+     return;
+  }
+  
+  transaksi.filter(t => t.tanggal >= tglDari && t.tanggal <= tglSampai).forEach(t=>{
+    if(t.mekanik && totals.hasOwnProperty(t.mekanik)){
+      totals[t.mekanik] += Number(t.bagianMekanik || 0);
+    } else if(t.mekanik && !totals.hasOwnProperty(t.mekanik)){
+      totals[t.mekanik] = Number(t.bagianMekanik || 0);
+    }
+  });
+  
+  // Menghitung total pendapatan semua mekanik
+  const allMechanicTotal = Object.values(totals).reduce((acc, val) => acc + val, 0);
+
+  let html = '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px">';
+  Object.keys(totals).sort().forEach(m => {
+    if (totals[m] > 0) { 
+      // Menghitung persentase
+      const percentage = (allMechanicTotal > 0) ? (totals[m] / allMechanicTotal) * 100 : 0;
+      const percentageFormatted = percentage.toFixed(1) + '%';
+
+      html += `<div class="card" style="text-align:left;padding:10px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <strong style="font-size: 14px;">${m}</strong>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight:700; color: var(--primary-1); font-size: 16px;">${formatCurrency(totals[m])}</div>
+          <div style="font-size: 12px; color: var(--primary-2); font-weight: 600;">${percentageFormatted}</div>
+        </div>
+      </div>`;
+    }
+  });
+  html += '</div>';
+  
+  if (Object.values(totals).every(v => v === 0)) {
+    html = `<div style="text-align:center; color: var(--muted); padding: 20px 0;">Belum ada data mekanik untuk rentang tanggal ini.</div>`;
+  }
+  
+  area.innerHTML = html;
+  $('#mekanikListTitle').innerText = `Pendapatan Per Mekanik (${tglDari} s/d ${tglSampai})`;
+}
+
+$('#btnTambahMekanik').addEventListener('click', ()=>{
+  Swal.fire({
+    title:'Tambah Mekanik Baru',
+    input:'text',
+    inputLabel:'Masukkan nama mekanik',
+    showCancelButton:true,
+    confirmButtonText:'Tambah',
+  }).then(res=>{
+    if(res.isConfirmed && res.value && res.value.trim()){
+      const name = res.value.trim();
+      if(!mekanik.includes(name)){
+        mekanik.push(name);
+        localStorage.setItem(KEY.mekanik, JSON.stringify(mekanik));
+        renderMekanikOptions();
+        Swal.fire('Berhasil', 'Mekanik ditambahkan', 'success');
+      } else {
+        Swal.fire('Info','Mekanik sudah ada','info');
+      }
+    }
+  });
+});
+
+/* ---------------------------
+  Transaksi
+  --------------------------- */
+const transForm = $('#formTransaksi');
+let editTransIndex = null;
+
+// PERBAIKAN: Listener untuk tombol "Tambah Transaksi Baru"
+$('#btnTampilFormTransaksi').addEventListener('click', () => {
+  $('#formTransaksi').style.display = 'block';
+  $('#btnTampilFormTransaksi').parentElement.style.display = 'none'; // Sembunyikan div tombol
+  clearTransaksiFormInputs(); // UBAH: Panggil fungsi baru untuk membersihkan
+  $('#transTanggal').value = todayISO(); // PERMINTAAN: Pastikan tanggal hari ini
+});
+
+// TAMBAHKAN: Listener untuk tombol "Batal"
+$('#btnBatalTransaksi').addEventListener('click', () => {
+  resetTransaksiForm();
+});
+
+// TAMBAHKAN: Fungsi kalkulasi otomatis
+function updateTransaksiCalculation() {
+  const jenis = $('#transJenis').value;
+  const hargaNum = parsePriceTextToNumber($('#transHarga').value);
+  const persenVal = parseFloat($('#transPersen').value) || 0;
+  const resultDiv = $('#transCalcResult');
+  
+  if (jenis === 'Jasa' && hargaNum > 0 && persenVal > 0) {
+    const bagianMekanik = Math.round(hargaNum * (persenVal / 100));
+    const bagianBengkel = hargaNum - bagianMekanik;
+    
+    $('#calcMekanik').textContent = formatCurrency(bagianMekanik);
+    $('#calcBengkel').textContent = formatCurrency(bagianBengkel);
+    resultDiv.style.display = 'block';
+  } else {
+    resultDiv.style.display = 'none';
+    $('#calcMekanik').textContent = 'Rp 0';
+    $('#calcBengkel').textContent = 'Rp 0';
+  }
+}
+
+// TAMBAHKAN: Event listener untuk kalkulasi otomatis
+$('#transHarga').addEventListener('input', updateTransaksiCalculation);
+$('#transPersen').addEventListener('input', updateTransaksiCalculation);
+$('#transJenis').addEventListener('change', updateTransaksiCalculation);
+
+
+function applyJenisVisibility(){
+  const jenis = $('#transJenis').value;
+  if(jenis === 'Barang'){
+    $('#transMekanikSection').style.display = 'none';
+  } else {
+    $('#transMekanikSection').style.display = 'block';
+  }
+  renderDatalist();
+  updateTransaksiCalculation(); // TAMBAHKAN: Hitung ulang saat jenis berubah
+}
+$('#transJenis').addEventListener('change', applyJenisVisibility);
+
+function renderDatalist() {
+  const dl = $('#listBarangJasa');
+  const jenis = $('#transJenis').value;
+  dl.innerHTML = ''; 
+  
+  if (jenis === 'Barang') {
+    barang.forEach(b => {
+      dl.innerHTML += `<option value="${b.nama}"></option>`;
+    });
+  } else { // Jasa
+    jasa.forEach(j => {
+      dl.innerHTML += `<option value="${j.nama}"></option>`;
+    });
+  }
+}
+
+$('#transNama').addEventListener('input', (e) => {
+  const nama = e.target.value;
+  const jenis = $('#transJenis').value;
+  let item = null;
+
+  if (jenis === 'Barang') {
+    item = barang.find(b => b.nama === nama);
+    if (item) {
+      $('#transHarga').value = item.jual || item.pasang || '';
+    }
+  } else { // Jasa
+    item = jasa.find(j => j.nama === nama);
+    if (item) {
+      $('#transHarga').value = item.harga || '';
+    }
+  }
+  updateTransaksiCalculation(); // TAMBAHKAN: Hitung ulang saat harga auto-fill
+});
+
+
+transForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const tanggal = $('#transTanggal').value || todayISO();
+  const jenis = $('#transJenis').value;
+  const nama = $('#transNama').value.trim();
+  const hargaText = $('#transHarga').value.trim();
+  if(!nama || !hargaText){
+    Swal.fire('Perhatian','Nama dan Harga wajib diisi','warning'); return;
+  }
+  const mekanikVal = $('#transMekanik').value || '';
+  let persenVal = parseFloat($('#transPersen').value) || 0;
+  const hargaNum = parsePriceTextToNumber(hargaText);
+  let bagianMekanik = 0, bagianBengkel = hargaNum;
+  if(jenis === 'Jasa' && mekanikVal && persenVal > 0){
+    bagianMekanik = Math.round(hargaNum * (persenVal/100));
+    bagianBengkel = hargaNum - bagianMekanik;
+  } else {
+    bagianMekanik = 0;
+    bagianBengkel = hargaNum;
+  }
+  const data = {tanggal, jenis, nama, hargaText, hargaNum, mekanik: mekanikVal, persen: persenVal, bagianMekanik, bagianBengkel};
+  
+  if(editTransIndex === null) {
+    if (window.simpanKeFirebase) {
+      window.simpanKeFirebase(data);
+    }
+    transaksi.push(data);
+    Swal.fire('Berhasil','Transaksi ditambahkan','success');
+  } else {
+    // TODO: Fungsi edit ke Firebase
+    transaksi[editTransIndex] = data;
+    editTransIndex = null;
+    Swal.fire('Berhasil','Transaksi diupdate','success');
+  }
+
+  localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
+  
+  resetTransaksiForm(); // UBAH: Panggil fungsi reset baru
+  
+  renderTransaksi();
+  renderDashboard();
+});
+
+// TAMBAHKAN: Fungsi baru HANYA untuk membersihkan input
+function clearTransaksiFormInputs() {
+  transForm.reset();
+  $('#transTanggal').value = todayISO();
+  applyJenisVisibility(); // Ini sudah termasuk updateTransaksiCalculation
+  editTransIndex = null;
+  $('#transCalcResult').style.display = 'none';
+  $('#formTransaksi button[type="submit"]').textContent = 'Tambah Transaksi';
+}
+
+// UBAH: Fungsi reset untuk Transaksi (membersihkan DAN menyembunyikan)
+function resetTransaksiForm() {
+  clearTransaksiFormInputs(); // Panggil fungsi pembersih
+  
+  // Sembunyikan form & kalkulator, tampilkan tombol
+  $('#formTransaksi').style.display = 'none';
+  $('#btnTampilFormTransaksi').parentElement.style.display = 'flex';
+}
+
+function renderTransaksi(filterStart, filterEnd, search=''){
+  const tbody = $('#tableTrans tbody'); tbody.innerHTML='';
+  let filtered = transaksi.slice();
+  if(filterStart && filterEnd){
+    filtered = filtered.filter(t => t.tanggal >= filterStart && t.tanggal <= filterEnd);
+  }
+  if(search) filtered = filtered.filter(t => t.nama.toLowerCase().includes(search.toLowerCase()));
+  
+  filtered.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+
+  filtered.forEach((t)=>{
+    const originalIndex = transaksi.findIndex(item => item === t);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.tanggal}</td>
+      <td>${t.jenis}</td>
+      <td>${t.nama}</td>
+      <td>${t.hargaText}</td>
+      <td>${t.mekanik || '-'}</td>
+      <td>${t.persen || '-'}</td>
+      <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td>
+      <td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>
+      <td class="actions">
+        <!-- PERUBAHAN: Tambah class btn-edit -->
+        <button class="ghost small btn-icon btn-edit" data-i="${originalIndex}" data-act="edit" title="Edit"><i class="fa-solid fa-pencil"></i></button>
+        <button class="ghost small btn-icon btn-danger" data-i="${originalIndex}" data-act="del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+$('#tableTrans').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const i = parseInt(btn.dataset.i);
+  const act = btn.dataset.act;
+  if(act === 'edit'){
+    const t = transaksi[i];
+    editTransIndex = i;
+    
+    // TAMBAHKAN: Tampilkan form saat edit
+    $('#formTransaksi').style.display = 'block';
+    $('#btnTampilFormTransaksi').parentElement.style.display = 'none';
+    $('#formTransaksi button[type="submit"]').textContent = 'Update Transaksi'; // Ubah teks tombol
+
+    $('#transTanggal').value = t.tanggal;
+    $('#transJenis').value = t.jenis;
+    $('#transNama').value = t.nama;
+    $('#transHarga').value = t.hargaText;
+    $('#transMekanik').value = t.mekanik || '';
+    $('#transPersen').value = t.persen || '';
+    
+    applyJenisVisibility(); // Ini akan memanggil updateTransaksiCalculation
+    window.scrollTo({top:0,behavior:'smooth'});
+    
+  } else if(act === 'del'){
+    Swal.fire({
+      title:'Yakin hapus transaksi ini?',
+      icon:'warning',
+      showCancelButton:true,
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal'
+    }).then(res=>{
+      if(res.isConfirmed){
+        const item = transaksi[i];
+        if(item.firebaseId && window.hapusTransaksiDariFirebase) {
+          window.hapusTransaksiDariFirebase(item.firebaseId);
+        }
+        
+        transaksi.splice(i,1);
+        localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
+        renderTransaksi($('#filterDari').value, $('#filterSampai').value, $('#searchTrans').value);
+        renderDashboard();
+        Swal.fire('Terhapus','Transaksi dihapus','success');
+      }
+    });
+  }
+});
+
+$('#btnApplyFilter').addEventListener('click', ()=>{
+  const d1 = $('#filterDari').value, d2 = $('#filterSampai').value;
+  renderTransaksi(d1 && d2 ? d1 : null, d1 && d2 ? d2 : null, $('#searchTrans').value);
+});
+$('#btnResetFilter').addEventListener('click', ()=>{
+  $('#filterDari').value='';$('#filterSampai').value='';$('#searchTrans').value='';
+  renderTransaksi();
+});
+$('#searchTrans').addEventListener('input', ()=>renderTransaksi($('#filterDari').value, $('#filterSampai').value, $('#searchTrans').value));
+// Hapus listener lama, sudah diganti btnBatalTransaksi
+// $('#resetTransBtn').addEventListener('click', ()=>{ transForm.reset(); $('#transTanggal').value = todayISO(); applyJenisVisibility(); editTransIndex=null; });
+
+  /* ---------------------------
+  Barang
+  --------------------------- */
+const barangForm = $('#formBarang');
+let editBarangIndex = null; // TAMBAHKAN: Variabel state edit
+
+barangForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const nama = $('#barangNama').value.trim();
+  if(!nama){ Swal.fire('Perhatian','Nama barang wajib','warning'); return;}
+  const jual = $('#barangJual').value.trim();
+  const pasang = $('#barangPasang').value.trim();
+  const ket = $('#barangKeterangan').value.trim();
+  const data = {nama,jual,pasang,ket};
+  
+  // PERUBAHAN: Logika Add vs Edit
+  if (editBarangIndex === null) {
+    // Mode Tambah
+    if (window.simpanBarangKeFirebase) {
+      window.simpanBarangKeFirebase(data);
+    }
+    barang.push(data);
+    Swal.fire('Berhasil','Barang ditambahkan','success');
+  } else {
+    // Mode Edit
+    // TODO: Fungsi edit ke Firebase
+    barang[editBarangIndex] = data;
+    editBarangIndex = null;
+    Swal.fire('Berhasil','Barang diupdate','success');
+  }
+
+  localStorage.setItem(KEY.barang, JSON.stringify(barang));
+  
+  // Reset dan Sembunyikan form
+  barangForm.reset();
+  $('#formBarang').style.display = 'none';
+  $('#btnTampilFormBarang').parentElement.style.display = 'flex';
+  $('#formBarang button[type="submit"]').textContent = 'Tambah Barang'; // Reset teks tombol
+  
+  renderBarang();
+});
+
+// PERUBAHAN: Listener tombol "Tambah Barang Baru"
+$('#btnTampilFormBarang').addEventListener('click', () => {
+  editBarangIndex = null; // Pastikan reset state edit
+  $('#formBarang').style.display = 'block';
+  $('#btnTampilFormBarang').parentElement.style.display = 'none'; 
+  barangForm.reset(); 
+  $('#formBarang button[type="submit"]').textContent = 'Tambah Barang';
+});
+
+// PERUBAHAN: Listener tombol "Batal"
+$('#btnBatalBarang').addEventListener('click', () => {
+  barangForm.reset();
+  editBarangIndex = null; // Reset state edit
+  $('#formBarang').style.display = 'none';
+  $('#btnTampilFormBarang').parentElement.style.display = 'flex';
+  $('#formBarang button[type="submit"]').textContent = 'Tambah Barang';
+});
+
+
+function renderBarang(){
+  const tbody = $('#tableBarang tbody'); tbody.innerHTML='';
+  const search = $('#searchBarang').value.trim().toLowerCase();
+  
+  const filteredBarang = barang.filter(b => !search || b.nama.toLowerCase().includes(search));
+  filteredBarang.sort((a,b)=> a.nama.toLowerCase().localeCompare(b.nama.toLowerCase()));
+
+  filteredBarang.forEach((b)=>{
+    const originalIndex = barang.findIndex(item => item === b);
+    const tr = document.createElement('tr');
+    // PERUBAHAN: Tambahkan tombol Edit
+    tr.innerHTML = `<td>${b.nama}</td><td>${b.jual||'-'}</td><td>${b.pasang||'-'}</td><td>${b.ket||'-'}</td>
+      <td class="actions">
+        <button class="ghost small btn-icon btn-edit" data-i="${originalIndex}" data-act="edit" title="Edit"><i class="fa-solid fa-pencil"></i></button>
+        <button class="ghost small btn-icon btn-danger" data-i="${originalIndex}" data-act="del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  renderDatalist(); 
+}
+
+// PERUBAHAN: Tambahkan logika "edit" di listener tabel
+$('#tableBarang').addEventListener('click',(e)=>{
+  const b = e.target.closest('button');
+  if(!b) return;
+  const i = parseInt(b.dataset.i);
+  const act = b.dataset.act; // Ambil aksi
+
+  if(act === 'edit') {
+    const item = barang[i];
+    editBarangIndex = i;
+
+    // Tampilkan form
+    $('#formBarang').style.display = 'block';
+    $('#btnTampilFormBarang').parentElement.style.display = 'none';
+    $('#formBarang button[type="submit"]').textContent = 'Update Barang';
+
+    // Isi form dengan data
+    $('#barangNama').value = item.nama;
+    $('#barangJual').value = item.jual || '';
+    $('#barangPasang').value = item.pasang || '';
+    $('#barangKeterangan').value = item.ket || '';
+
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } else if(act==='del'){
+    Swal.fire({
+      title:'Hapus barang?',
+      icon:'warning',
+      showCancelButton:true,
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal'
+    }).then(res=>{
+      if(res.isConfirmed){
+        const item = barang[i];
+        if(item.firebaseId && window.hapusBarangDariFirebase) {
+          window.hapusBarangDariFirebase(item.firebaseId);
+        }
+        
+        barang.splice(i,1); 
+        localStorage.setItem(KEY.barang, JSON.stringify(barang)); 
+        renderBarang(); 
+        Swal.fire('Terhapus','Barang dihapus','success'); 
+      }
+    });
+  }
+});
+$('#searchBarang').addEventListener('input', renderBarang);
+$('#btnSortBarang').addEventListener('click', ()=>{ renderBarang(); });
+
+/* ---------------------------
+  Jasa
+  --------------------------- */
+const jasaForm = $('#formJasa');
+let editJasaIndex = null; // TAMBAHKAN: Variabel state edit
+
+jasaForm.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const nama = $('#jasaNama').value.trim();
+  if(!nama){ Swal.fire('Perhatian','Nama jasa wajib','warning'); return;}
+  const harga = $('#jasaHarga').value.trim();
+  const ket = $('#jasaKeterangan').value.trim();
+  const data = {nama,harga,ket};
+  
+  // PERUBAHAN: Logika Add vs Edit
+  if (editJasaIndex === null) {
+    // Mode Tambah
+    if (window.simpanJasaKeFirebase) {
+      window.simpanJasaKeFirebase(data);
+    }
+    jasa.push(data);
+    Swal.fire('Berhasil','Jasa ditambahkan','success');
+  } else {
+    // Mode Edit
+    // TODO: Fungsi edit ke Firebase
+    jasa[editJasaIndex] = data;
+    editJasaIndex = null;
+    Swal.fire('Berhasil','Jasa diupdate','success');
+  }
+  
+  localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
+  
+  // Reset dan Sembunyikan form
+  jasaForm.reset();
+  $('#formJasa').style.display = 'none';
+  $('#btnTampilFormJasa').parentElement.style.display = 'flex';
+  $('#formJasa button[type="submit"]').textContent = 'Tambah Jasa'; // Reset teks tombol
+  
+  renderJasa();
+});
+
+// PERUBAHAN: Listener tombol "Tambah Jasa Baru"
+$('#btnTampilFormJasa').addEventListener('click', () => {
+  editJasaIndex = null; // Pastikan reset state edit
+  $('#formJasa').style.display = 'block';
+  $('#btnTampilFormJasa').parentElement.style.display = 'none'; 
+  jasaForm.reset(); 
+  $('#formJasa button[type="submit"]').textContent = 'Tambah Jasa';
+});
+
+// PERUBAHAN: Listener tombol "Batal"
+$('#btnBatalJasa').addEventListener('click', () => {
+  jasaForm.reset();
+  editJasaIndex = null; // Reset state edit
+  $('#formJasa').style.display = 'none';
+  $('#btnTampilFormJasa').parentElement.style.display = 'flex';
+  $('#formJasa button[type="submit"]').textContent = 'Tambah Jasa';
+});
+
+function renderJasa(){
+  const tbody = $('#tableJasa tbody'); tbody.innerHTML='';
+  const search = $('#searchJasa').value.trim().toLowerCase();
+
+  const filteredJasa = jasa.filter(j => !search || j.nama.toLowerCase().includes(search));
+  filteredJasa.sort((a,b)=> a.nama.toLowerCase().localeCompare(b.nama.toLowerCase()));
+
+  filteredJasa.forEach((j)=>{
+    const originalIndex = jasa.findIndex(item => item === j);
+    const tr = document.createElement('tr');
+    // PERUBAHAN: Tambahkan tombol Edit
+    tr.innerHTML = `<td>${j.nama}</td><td>${j.harga||'-'}</td><td>${j.ket||'-'}</td>
+      <td class="actions">
+        <button class="ghost small btn-icon btn-edit" data-i="${originalIndex}" data-act="edit" title="Edit"><i class="fa-solid fa-pencil"></i></button>
+        <button class="ghost small btn-icon btn-danger" data-i="${originalIndex}" data-act="del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  renderDatalist();
+}
+
+// PERUBAHAN: Tambahkan logika "edit" di listener tabel
+$('#tableJasa').addEventListener('click',(e)=>{
+  const b = e.target.closest('button'); if(!b) return;
+  const i = parseInt(b.dataset.i);
+  const act = b.dataset.act; // Ambil aksi
+
+  if(act === 'edit') {
+    const item = jasa[i];
+    editJasaIndex = i;
+
+    // Tampilkan form
+    $('#formJasa').style.display = 'block';
+    $('#btnTampilFormJasa').parentElement.style.display = 'none';
+    $('#formJasa button[type="submit"]').textContent = 'Update Jasa';
+
+    // Isi form dengan data
+    $('#jasaNama').value = item.nama;
+    $('#jasaHarga').value = item.harga || '';
+    $('#jasaKeterangan').value = item.ket || '';
+
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } else if(act==='del'){
+    Swal.fire({
+      title:'Hapus jasa?',
+      icon:'warning',
+      showCancelButton:true,
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal'
+    }).then(res=>{
+      if(res.isConfirmed){ 
+        const item = jasa[i];
+        if(item.firebaseId && window.hapusJasaDariFirebase) {
+          window.hapusJasaDariFirebase(item.firebaseId);
+        }
+        
+        jasa.splice(i,1); 
+        localStorage.setItem(KEY.jasa, JSON.stringify(jasa)); 
+        renderJasa(); 
+        Swal.fire('Terhapus','Jasa dihapus','success'); 
+      }
+    });
+  }
+});
+$('#searchJasa').addEventListener('input', renderJasa);
+$('#btnSortJasa').addEventListener('click', ()=>{ renderJasa(); });
+
+/* ---------------------------
+  Laporan (chart) (Tetap sama)
+  --------------------------- */
+const ctx = document.getElementById('lapChart').getContext('2d');
+let lapChart = new Chart(ctx, {
+  type:'line',
+  data:{labels:[],datasets:[{label:'Pendapatan (Rp)',data:[],fill:true, backgroundColor: 'rgba(0, 123, 255, 0.1)', borderColor: 'rgba(0, 123, 255, 1)', tension: 0.1 }]},
+  options:{
+    maintainAspectRatio:false,
+    scales:{y:{ticks:{callback: v => 'Rp ' + Number(v).toLocaleString('id-ID')}}
+    }
+  }
+});
+
+$('#formLaporan').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const d1 = $('#lapDari').value, d2 = $('#lapSampai').value;
+  if(!d1 || !d2 || d1>d2){ Swal.fire('Perhatian','Rentang tanggal tidak valid','warning'); return;}
+  renderLaporan(d1,d2);
+});
+
+function renderLaporan(dari,sampai){
+  const filtered = transaksi.filter(t => t.tanggal >= dari && t.tanggal <= sampai);
+  filtered.sort((a,b)=> a.tanggal.localeCompare(b.tanggal));
+  const tbody = $('#tableLaporan tbody'); tbody.innerHTML='';
+  let totalBengkel=0, totalMekanik=0, totalAll=0;
+  filtered.forEach(t=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.tanggal}</td><td>${t.jenis}</td><td>${t.nama}</td><td>${t.hargaText}</td><td>${t.mekanik || '-'}</td>
+      <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td><td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>`;
+    tbody.appendChild(tr);
+    totalBengkel += Number(t.bagianBengkel || 0);
+    totalMekanik += Number(t.bagianMekanik || 0);
+    totalAll += Number(t.hargaNum || 0);
+  });
+  const perMekanik = {};
+  mekanik.forEach(m=>perMekanik[m]=0);
+  filtered.forEach(t => { if(t.mekanik){ perMekanik[t.mekanik] = (perMekanik[t.mekanik]||0) + Number(t.bagianMekanik || 0); }});
+  let rHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">`;
+  rHtml += `<div><strong>Total Pendapatan (rentang)</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalAll)}</div></div>`;
+  rHtml += `<div><strong>Total Bagian Bengkel</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalBengkel)}</div></div>`;
+  rHtml += `<div><strong>Total Bagian Mekanik</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalMekanik)}</div></div>`;
+  rHtml += `</div><hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;"><div style="margin-top:8px">`;
+  rHtml += `<strong style="font-size: 13px; color: var(--muted);">Rincian Per Mekanik:</strong>`;
+  Object.keys(perMekanik).sort().forEach(m => {
+    if (perMekanik[m] > 0) {
+      rHtml += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f7fb"><div style="font-size: 14px;">${m}</div><div style="font-size: 14px; font-weight: 600;">${formatCurrency(perMekanik[m])}</div></div>`;
+    }
+  });
+  rHtml += `</div>`;
+  $('#lapRingkasan').innerHTML = rHtml;
+
+  const dayMap = {};
+  for(let d=new Date(dari); d<=new Date(sampai); d.setDate(d.getDate()+1)){
+    const key = d.toISOString().split('T')[0]; dayMap[key]=0;
+  }
+  filtered.forEach(t => {
+    dayMap[t.tanggal] = (dayMap[t.tanggal]||0) + (Number(t.hargaNum) || 0);
+  });
+  const labels = Object.keys(dayMap).sort();
+  const data = labels.map(l => dayMap[l]);
+  lapChart.data.labels = labels;
+  lapChart.data.datasets[0].data = data;
+  lapChart.update();
+}
+
+$('#btnExportLaporan').addEventListener('click', ()=>{
+  const el = document.createElement('div');
+  el.innerHTML = `<h3>Laporan Bengkel (Periode ${$('#lapDari').value} s/d ${$('#lapSampai').value})</h3>
+    <style>
+      * {font-family: Arial, sans-serif; box-sizing: border-box;}
+      h3 {font-size: 16px;}
+      table {width: 100%; border-collapse: collapse; font-size: 10px;}
+      th, td {border: 1px solid #ccc; padding: 4px; text-align: left;}
+      th {background: #eee;}
+      #lapSummary {border: 1px solid #ccc; padding: 10px; font-size: 12px; margin-bottom: 10px;}
+    </style>
+    ${$('#lapSummary').outerHTML}
+    <h3 style="margin-top: 15px;">Rincian Transaksi</h3>
+    <div style="overflow:auto">${$('#tableLaporan').outerHTML}</div>`;
+  html2pdf().from(el).set({
+      margin: [10, 10, 10, 10],
+      filename: `laporan-bengkel-${$('#lapDari').value}-${$('#lapSampai').value}.pdf`,
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).save();
+});
+
+
+/* ---------------------------
+  Dashboard rendering
+  --------------------------- */
+function renderDashboard(){
+  const tglDari = $('#dashboardDari').value;
+  const tglSampai = $('#dashboardSampai').value;
+  let totalRentang=0, totalBengkel=0, totalMekanik=0;
+  
+  if (!tglDari || !tglSampai || tglDari > tglSampai) {
+     Swal.fire('Perhatian', 'Rentang tanggal di dashboard tidak valid', 'warning');
+     return;
+  }
+  
+  $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-calendar-week"></i> Total Transaksi (Rentang)`;
+
+  transaksi.forEach(t => {
+    if(t.tanggal >= tglDari && t.tanggal <= tglSampai){
+      totalRentang += Number(t.hargaNum || 0);
+      totalBengkel += Number(t.bagianBengkel || 0);
+      totalMekanik += Number(t.bagianMekanik || 0);
+    }
+  });
+  $('#cardTotalHari').innerText = formatCurrency(totalRentang);
+  $('#cardBengkel').innerText = formatCurrency(totalBengkel);
+  $('#cardMekanikTotal').innerText = formatCurrency(totalMekanik);
+  $('#cardGrandTotal').innerText = formatCurrency(totalRentang); 
+  
+  renderMekanikList();
+}
+
+/* ---------------------------
+  Initial rendering
+  --------------------------- */
+renderMekanikOptions();
+renderTransaksi();
+renderBarang();
+renderJasa();
+renderDatalist(); 
+renderDashboard(); 
+
+$('#formFilterDashboard').addEventListener('submit', (e) => {
+  e.preventDefault(); 
+  renderDashboard();
+});
+
+$('footer').innerHTML = `&copy; ${new Date().getFullYear()} Bengkel Promotor. Dibuat untuk pribadi.`;
+
+
+/* ---------------------------
+  Save periodically (Tetap sama)
+  --------------------------- */
+setInterval(()=>{ 
+  localStorage.setItem(KEY.trans, JSON.stringify(transaksi)); 
+  localStorage.setItem(KEY.barang, JSON.stringify(barang)); 
+  localStorage.setItem(KEY.jasa, JSON.stringify(jasa)); 
+}, 3000);
+
+/* PERUBAHAN: Swipe gesture DIHAPUS */
+
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFAkRDirMI7ImVpTy0Ak8CCKgim9MIGb8",
+    authDomain: "bengkelku-app-1930.firebaseapp.com",
+    projectId: "bengkelku-app-1930",
+    storageBucket: "bengkelku-app-1930.firebasestorage.app",
+    messagingSenderId: "281681895397",
+    appId: "1:281681895397:web:f88f12c90776799192990c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  /* --- FUNGSI SIMPAN --- */
+  async function simpanKeFirebase(data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId; 
+      await addDoc(collection(db, "transaksi"), dataToSave);
+    } catch (e) { console.error("Error adding transaksi: ", e); }
+  }
+
+  async function simpanBarangKeFirebase(data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId;
+      await addDoc(collection(db, "barang"), dataToSave);
+    } catch (e) { console.error("Error adding barang: ", e); }
+  }
+
+  async function simpanJasaKeFirebase(data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId;
+      await addDoc(collection(db, "jasa"), dataToSave);
+    } catch (e) { console.error("Error adding jasa: ", e); }
+  }
+
+  /* --- FUNGSI HAPUS --- */
+  async function hapusTransaksiDariFirebase(id) {
+    try { await deleteDoc(doc(db, "transaksi", id)); }
+    catch(e) { console.error("Gagal hapus transaksi:", e); }
+  }
+  async function hapusBarangDariFirebase(id) {
+    try { await deleteDoc(doc(db, "barang", id)); }
+    catch(e) { console.error("Gagal hapus barang:", e); }
+  }
+  async function hapusJasaDariFirebase(id) {
+    try { await deleteDoc(doc(db, "jasa", id)); }
+    catch(e) { console.error("Gagal hapus jasa:", e); }
+  }
+
+
+  /* --- FUNGSI AMBIL (FETCH) --- */
+  async function ambilDariFirebase(showSuccess = true) {
+    const querySnapshot = await getDocs(collection(db, "transaksi"));
+    transaksi = []; 
+    querySnapshot.forEach((docu) => {
+      const data = docu.data();
+      data.firebaseId = docu.id;
+      transaksi.push(data);
+    });
+    localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
+    if (showSuccess) {
+      renderTransaksi(); 
+      Swal.fire("Sinkron Berhasil!", "Data transaksi berhasil diambil dari cloud!", "success");
+    }
+  }
+
+  async function ambilBarangDariFirebase(showSuccess = true) {
+    const querySnapshot = await getDocs(collection(db, "barang"));
+    barang = []; 
+    querySnapshot.forEach((docu) => {
+      const data = docu.data();
+      data.firebaseId = docu.id;
+      barang.push(data);
+    });
+    localStorage.setItem(KEY.barang, JSON.stringify(barang));
+    if (showSuccess) {
+      renderBarang(); 
+      Swal.fire("Sinkron Berhasil!", "Data barang berhasil diambil dari cloud!", "success");
+    }
+  }
+  
+  async function ambilJasaDariFirebase(showSuccess = true) {
+    const querySnapshot = await getDocs(collection(db, "jasa"));
+    jasa = []; 
+    querySnapshot.forEach((docu) => {
+      const data = docu.data();
+      data.firebaseId = docu.id;
+      jasa.push(data);
+    });
+    localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
+    if (showSuccess) {
+      renderJasa(); 
+      Swal.fire("Sinkron Berhasil!", "Data jasa berhasil diambil dari cloud!", "success");
+    }
+  }
+
+  /* --- FUNGSI SYNC GLOBAL (UNTUK TOMBOL) --- */
+  async function syncSemuaData() {
+    Swal.fire({
+      title: 'Sinkronisasi Manual...',
+      text: 'Mengambil data terbaru dari cloud.',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    try {
+      await Promise.all([
+        ambilDariFirebase(false), 
+        ambilBarangDariFirebase(false), 
+        ambilJasaDariFirebase(false) 
+      ]);
+
+      renderTransaksi();
+      renderBarang();
+      renderJasa();
+      renderDashboard(); 
+      renderDatalist(); 
+
+      Swal.fire("Sinkron Berasil!", "Semua data telah diperbarui dari cloud!", "success");
+
+    } catch (e) {
+      console.error("Gagal sinkron semua data:", e);
+      Swal.fire("Gagal Sinkron", "Tidak dapat mengambil data. Periksa konsol (F12) untuk error.", "error");
+    }
+  }
+  
+  document.querySelector("#btnSyncSemua").addEventListener("click", syncSemuaData);
+
+  // Ekspos fungsi ke window
+  window.simpanKeFirebase = simpanKeFirebase;
+  window.simpanBarangKeFirebase = simpanBarangKeFirebase;
+  window.simpanJasaKeFirebase = simpanJasaKeFirebase;
+  window.hapusTransaksiDariFirebase = hapusTransaksiDariFirebase;
+  window.hapusBarangDariFirebase = hapusBarangDariFirebase;
+  window.hapusJasaDariFirebase = hapusJasaDariFirebase;
+
+  
+  /* --- SINKRONISASI OTOMATIS SAAT MEMBUKA APLIKASI --- */
+  (async () => {
+    console.log("Menjalankan sinkronisasi otomatis...");
+    Swal.fire({
+      title: 'Sinkronisasi Otomatis...',
+      text: 'Mengambil data terbaru dari cloud.',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    try {
+      await Promise.all([
+        ambilDariFirebase(false),
+        ambilBarangDariFirebase(false),
+        ambilJasaDariFirebase(false)
+      ]);
+
+      // Render ulang semua data setelah fetch
+      renderTransaksi();
+      renderBarang();
+      renderJasa();
+      renderDashboard();
+      renderDatalist(); 
+      
+      Swal.close(); 
+      console.log("Sinkronisasi otomatis selesai.");
+
+    } catch (e) {
+      console.error("Gagal sinkron otomatis:", e);
+      Swal.fire("Gagal Sinkron", "Gagal mengambil data cloud. Memuat data lokal yang ada.", "error");
+    }
+  })();
+</script>
+</body>
+</html>
+
