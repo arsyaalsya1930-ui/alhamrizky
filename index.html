@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Bengkel Promotor — Modern</title>
 
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0052cc" />
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,7 +18,7 @@
      TEMA MODERN & CLEAN
      --------------------------- */
   :root{
-    --primary-1: #0052cc; 
+    --primary-1: #0052cc;
     --primary-2: #007bff;
     --bg: #f8f9fa;
     --card: #ffffff;
@@ -33,7 +35,7 @@
     background:var(--bg);
     color:#1a202c;
     -webkit-font-smoothing:antialiased;
-    padding-bottom: 70px; 
+    padding-bottom: 70px;
   }
   header{
     background:var(--card);
@@ -70,7 +72,7 @@
     display: flex;
     justify-content: space-around;
     /* PERUBAHAN: Padding vertikal ditambah agar lebih tinggi */
-    padding: 12px 0 10px 0; 
+    padding: 12px 0 10px 0;
     margin-bottom: 0;
     overflow-x: hidden;
     z-index: 100;
@@ -79,7 +81,7 @@
     flex: 1;
     flex-direction: column;
     /* PERUBAHAN: Ukuran font teks diperbesar */
-    font-size: 12px; 
+    font-size: 12px;
     font-weight: 500;
     padding: 0 4px; /* Padding horizontal saja */
     border-radius: 8px;
@@ -88,17 +90,17 @@
     box-shadow: none;
     white-space: normal;
     /* PERUBAHAN: Jarak ikon & teks ditambah */
-    gap: 5px; 
+    gap: 5px;
     text-align: center;
     -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap */
     transition: color 0.2s ease, background-color 0.2s ease;
   }
   nav#navTabs .tab i {
     /* PERUBAHAN: Ikon diperbesar */
-    font-size: 20px; 
+    font-size: 20px;
     margin-bottom: 0;
     /* PERUBAHAN: Tinggi disesuaikan dengan ikon */
-    height: 50px; 
+    height: 50px;
     display: inline-flex;
     align-items: center;
     color: var(--muted); /* Warna ikon non-aktif */
@@ -112,7 +114,7 @@
   }
   /* Ikon di tab aktif juga ikut berwarna */
   nav#navTabs .tab.active i {
-    color: var(--primary-1); 
+    color: var(--primary-1);
   }
   nav#navTabs .tab:hover {
     background: #f0f3f5;
@@ -290,7 +292,6 @@
 <body>
 
 <header>
-  <!-- <i class="fa-solid fa-wrench"></i> Ikon dihilangkan untuk center -->
   <div style="text-align: center; width: 100%;">
     <h1>Bengkel Promotor</h1>
     <span style="font-size: 12px; color: var(--muted); font-weight: 500; margin-top: -2px; display: block;">ALDEL Hotspot WiFi, Kalangkangan, Pantidoan, Jl.Hi Latto</span>
@@ -346,13 +347,11 @@
 
   <section id="transaksiSection" style="display:none">
     
-    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
     <div class="controls" style="margin-bottom: 10px;">
       <button id="btnTampilFormTransaksi" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Transaksi Baru</button>
     </div>
 
-    <form id="formTransaksi" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form -->
-      <datalist id="listBarangJasa"></datalist>
+    <form id="formTransaksi" style="display:none;"> <datalist id="listBarangJasa"></datalist>
       
       <div class="row">
         <div class="col">
@@ -385,7 +384,6 @@
         <input type="tel" id="transPersen" placeholder="Contoh: 10" inputmode="numeric">
       </div>
 
-      <!-- TAMBAHKAN: Area Hasil Kalkulasi Otomatis -->
       <div id="transCalcResult" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
         <div style="display: flex; justify-content: space-between; font-size: 14px;">
           <span style="color: var(--muted);">Bagian Mekanik:</span>
@@ -397,10 +395,8 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:8px;margin-top:15px"> <!-- margin-top ditambah -->
-        <button type="submit">Tambah Transaksi</button>
-        <button type="button" class="ghost" id="btnBatalTransaksi">Batal</button> <!-- UBAH: ID dan Teks -->
-      </div>
+      <div style="display:flex;gap:8px;margin-top:15px"> <button type="submit">Tambah Transaksi</button>
+        <button type="button" class="ghost" id="btnBatalTransaksi">Batal</button> </div>
     </form>
 
     <div class="controls">
@@ -422,8 +418,7 @@
   </section>
 
   <section id="barangSection" style="display:none">
-    <form id="formBarang" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form by default -->
-      <label>Nama Barang *</label>
+    <form id="formBarang" style="display:none;"> <label>Nama Barang *</label>
       <input type="text" id="barangNama" required>
       <label>Harga Jual</label>
       <input type="tel" id="barangJual" inputmode="numeric">
@@ -433,12 +428,10 @@
       <textarea id="barangKeterangan" ></textarea>
       <div style="display:flex;gap:8px">
         <button type="submit">Tambah Barang</button>
-        <!-- UBAH: Ganti ID dan Teks Tombol -->
         <button type="button" class="ghost" id="btnBatalBarang">Batal</button>
       </div>
     </form>
 
-    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
     <div class="controls" style="margin-bottom: 10px;">
       <button id="btnTampilFormBarang" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Barang Baru</button>
     </div>
@@ -457,8 +450,7 @@
   </section>
 
   <section id="jasaSection" style="display:none">
-    <form id="formJasa" style="display:none;"> <!-- TAMBAHKAN: Sembunyikan form by default -->
-      <label>Nama Jasa *</label>
+    <form id="formJasa" style="display:none;"> <label>Nama Jasa *</label>
       <input type="text" id="jasaNama" required>
       <label>Harga Jasa</label>
       <input type="tel" id="jasaHarga" inputmode="numeric">
@@ -466,11 +458,9 @@
       <textarea id="jasaKeterangan"></textarea>
       <div style="display:flex;gap:8px">
         <button type="submit">Tambah Jasa</button>
-        <button type="button" class="ghost" id="btnBatalJasa">Batal</button> <!-- UBAH: ID dan Teks -->
-      </div>
+        <button type="button" class="ghost" id="btnBatalJasa">Batal</button> </div>
     </form>
 
-    <!-- TAMBAHKAN: Tombol utama untuk menampilkan form -->
     <div class="controls" style="margin-bottom: 10px;">
       <button id="btnTampilFormJasa" style="width: 100%;"><i class="fa-solid fa-plus"></i> Tambah Jasa Baru</button>
     </div>
@@ -522,7 +512,9 @@
   </section>
 
   <footer></footer>
-</div> <nav id="navTabs">
+</div> 
+
+<nav id="navTabs">
   <div class="tab active" data-tab="dashboard"><i class="fa-solid fa-chart-simple"></i>Dashboard</div>
   <div class="tab" data-tab="transaksi"><i class="fa-solid fa-cash-register"></i>Transaksi</div>
   <div class="tab" data-tab="barang"><i class="fa-solid fa-box"></i>Barang</div>
@@ -610,7 +602,7 @@ tabs.forEach(t => t.addEventListener('click', ()=> {
   Initialize defaults
   --------------------------- */
 $('#transTanggal').value = todayISO();
-$('#dashboardDari').value = getStartOfMonthISO(); 
+$('#dashboardDari').value = getStartOfMonthISO();
 $('#dashboardSampai').value = todayISO();
 $('#filterDari').value = '';
 $('#filterSampai').value = '';
@@ -675,7 +667,7 @@ function renderMekanikList(){
 
   let html = '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px">';
   Object.keys(totals).sort().forEach(m => {
-    if (totals[m] > 0) { 
+    if (totals[m] > 0) {
       // Menghitung persentase
       const percentage = (allMechanicTotal > 0) ? (totals[m] / allMechanicTotal) * 100 : 0;
       const percentageFormatted = percentage.toFixed(1) + '%';
@@ -784,7 +776,7 @@ $('#transJenis').addEventListener('change', applyJenisVisibility);
 function renderDatalist() {
   const dl = $('#listBarangJasa');
   const jenis = $('#transJenis').value;
-  dl.innerHTML = ''; 
+  dl.innerHTML = '';
   
   if (jenis === 'Barang') {
     barang.forEach(b => {
@@ -879,6 +871,9 @@ function resetTransaksiForm() {
   $('#btnTampilFormTransaksi').parentElement.style.display = 'flex';
 }
 
+// -----------------------------------------------------------------
+// PERBAIKAN: Ini adalah fungsi renderTransaksi yang sudah aman
+// -----------------------------------------------------------------
 function renderTransaksi(filterStart, filterEnd, search=''){
   const tbody = $('#tableTrans tbody'); tbody.innerHTML='';
   let filtered = transaksi.slice();
@@ -887,27 +882,49 @@ function renderTransaksi(filterStart, filterEnd, search=''){
   }
   if(search) filtered = filtered.filter(t => t.nama.toLowerCase().includes(search.toLowerCase()));
   
-  filtered.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+  // PERBAIKAN: Fungsi sort dibuat lebih aman dari error 'localeCompare'
+  filtered.sort((a, b) => {
+    // Jika B tidak punya tanggal, geser ke bawah
+    if (!b || !b.tanggal) return 1; 
+    // Jika A tidak punya tanggal, geser ke bawah
+    if (!a || !a.tanggal) return -1;
+    // Jika keduanya punya tanggal, bandingkan
+    return b.tanggal.localeCompare(a.tanggal);
+  });
+  // AKHIR PERBAIKAN
 
   filtered.forEach((t)=>{
+    // Pastikan transaksi 't' ada sebelum mencari index
+    if (!t) return; 
+    
     const originalIndex = transaksi.findIndex(item => item === t);
+    
+    // Pastikan 't' memiliki properti yang diperlukan
+    const tanggal = t.tanggal || 'N/A';
+    const jenis = t.jenis || 'N/A';
+    const nama = t.nama || 'Tanpa Nama';
+    const hargaText = t.hargaText || 'Rp 0';
+
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${t.tanggal}</td>
-      <td>${t.jenis}</td>
-      <td>${t.nama}</td>
-      <td>${t.hargaText}</td>
+    tr.innerHTML = `<td>${tanggal}</td>
+      <td>${jenis}</td>
+      <td>${nama}</td>
+      <td>${hargaText}</td>
       <td>${t.mekanik || '-'}</td>
       <td>${t.persen || '-'}</td>
       <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td>
       <td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>
       <td class="actions">
-        <!-- PERUBAHAN: Tambah class btn-edit -->
         <button class="ghost small btn-icon btn-edit" data-i="${originalIndex}" data-act="edit" title="Edit"><i class="fa-solid fa-pencil"></i></button>
         <button class="ghost small btn-icon btn-danger" data-i="${originalIndex}" data-act="del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
       </td>`;
     tbody.appendChild(tr);
   });
 }
+// -----------------------------------------------------------------
+// AKHIR DARI FUNGSI renderTransaksi
+// -----------------------------------------------------------------
+
 
 $('#tableTrans').addEventListener('click', (e)=>{
   const btn = e.target.closest('button');
@@ -966,8 +983,6 @@ $('#btnResetFilter').addEventListener('click', ()=>{
   renderTransaksi();
 });
 $('#searchTrans').addEventListener('input', ()=>renderTransaksi($('#filterDari').value, $('#filterSampai').value, $('#searchTrans').value));
-// Hapus listener lama, sudah diganti btnBatalTransaksi
-// $('#resetTransBtn').addEventListener('click', ()=>{ transForm.reset(); $('#transTanggal').value = todayISO(); applyJenisVisibility(); editTransIndex=null; });
 
   /* ---------------------------
   Barang
@@ -1015,8 +1030,8 @@ barangForm.addEventListener('submit', (e)=>{
 $('#btnTampilFormBarang').addEventListener('click', () => {
   editBarangIndex = null; // Pastikan reset state edit
   $('#formBarang').style.display = 'block';
-  $('#btnTampilFormBarang').parentElement.style.display = 'none'; 
-  barangForm.reset(); 
+  $('#btnTampilFormBarang').parentElement.style.display = 'none';
+  barangForm.reset();
   $('#formBarang button[type="submit"]').textContent = 'Tambah Barang';
 });
 
@@ -1048,7 +1063,7 @@ function renderBarang(){
       </td>`;
     tbody.appendChild(tr);
   });
-  renderDatalist(); 
+  renderDatalist();
 }
 
 // PERUBAHAN: Tambahkan logika "edit" di listener tabel
@@ -1089,10 +1104,10 @@ $('#tableBarang').addEventListener('click',(e)=>{
           window.hapusBarangDariFirebase(item.firebaseId);
         }
         
-        barang.splice(i,1); 
-        localStorage.setItem(KEY.barang, JSON.stringify(barang)); 
-        renderBarang(); 
-        Swal.fire('Terhapus','Barang dihapus','success'); 
+        barang.splice(i,1);
+        localStorage.setItem(KEY.barang, JSON.stringify(barang));
+        renderBarang();
+        Swal.fire('Terhapus','Barang dihapus','success');
       }
     });
   }
@@ -1145,8 +1160,8 @@ jasaForm.addEventListener('submit',(e)=>{
 $('#btnTampilFormJasa').addEventListener('click', () => {
   editJasaIndex = null; // Pastikan reset state edit
   $('#formJasa').style.display = 'block';
-  $('#btnTampilFormJasa').parentElement.style.display = 'none'; 
-  jasaForm.reset(); 
+  $('#btnTampilFormJasa').parentElement.style.display = 'none';
+  jasaForm.reset();
   $('#formJasa button[type="submit"]').textContent = 'Tambah Jasa';
 });
 
@@ -1210,16 +1225,16 @@ $('#tableJasa').addEventListener('click',(e)=>{
       confirmButtonText: 'Ya, Hapus',
       cancelButtonText: 'Batal'
     }).then(res=>{
-      if(res.isConfirmed){ 
+      if(res.isConfirmed){
         const item = jasa[i];
         if(item.firebaseId && window.hapusJasaDariFirebase) {
           window.hapusJasaDariFirebase(item.firebaseId);
         }
         
-        jasa.splice(i,1); 
-        localStorage.setItem(KEY.jasa, JSON.stringify(jasa)); 
-        renderJasa(); 
-        Swal.fire('Terhapus','Jasa dihapus','success'); 
+        jasa.splice(i,1);
+        localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
+        renderJasa();
+        Swal.fire('Terhapus','Jasa dihapus','success');
       }
     });
   }
@@ -1340,7 +1355,7 @@ function renderDashboard(){
   $('#cardTotalHari').innerText = formatCurrency(totalRentang);
   $('#cardBengkel').innerText = formatCurrency(totalBengkel);
   $('#cardMekanikTotal').innerText = formatCurrency(totalMekanik);
-  $('#cardGrandTotal').innerText = formatCurrency(totalRentang); 
+  $('#cardGrandTotal').innerText = formatCurrency(totalRentang);
   
   renderMekanikList();
 }
@@ -1352,24 +1367,24 @@ renderMekanikOptions();
 renderTransaksi();
 renderBarang();
 renderJasa();
-renderDatalist(); 
-renderDashboard(); 
+renderDatalist();
+renderDashboard();
 
 $('#formFilterDashboard').addEventListener('submit', (e) => {
-  e.preventDefault(); 
+  e.preventDefault();
   renderDashboard();
 });
 
-$('footer').innerHTML = `&copy; ${new Date().getFullYear()} V1.1 Bengkel Promotor. Dibuat untuk pribadi.`;
+$('footer').innerHTML = `&copy; ${new Date().getFullYear()} Bengkel Promotor. Dibuat untuk pribadi.`;
 
 
 /* ---------------------------
   Save periodically (Tetap sama)
   --------------------------- */
-setInterval(()=>{ 
-  localStorage.setItem(KEY.trans, JSON.stringify(transaksi)); 
-  localStorage.setItem(KEY.barang, JSON.stringify(barang)); 
-  localStorage.setItem(KEY.jasa, JSON.stringify(jasa)); 
+setInterval(()=>{
+  localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
+  localStorage.setItem(KEY.barang, JSON.stringify(barang));
+  localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
 }, 3000);
 
 /* PERUBAHAN: Swipe gesture DIHAPUS */
@@ -1396,7 +1411,7 @@ setInterval(()=>{
   async function simpanKeFirebase(data) {
     try {
       const dataToSave = { ...data };
-      delete dataToSave.firebaseId; 
+      delete dataToSave.firebaseId;
       await addDoc(collection(db, "transaksi"), dataToSave);
     } catch (e) { console.error("Error adding transaksi: ", e); }
   }
@@ -1435,7 +1450,7 @@ setInterval(()=>{
   /* --- FUNGSI AMBIL (FETCH) --- */
   async function ambilDariFirebase(showSuccess = true) {
     const querySnapshot = await getDocs(collection(db, "transaksi"));
-    transaksi = []; 
+    transaksi = [];
     querySnapshot.forEach((docu) => {
       const data = docu.data();
       data.firebaseId = docu.id;
@@ -1443,14 +1458,14 @@ setInterval(()=>{
     });
     localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
     if (showSuccess) {
-      renderTransaksi(); 
+      renderTransaksi();
       Swal.fire("Sinkron Berhasil!", "Data transaksi berhasil diambil dari cloud!", "success");
     }
   }
 
   async function ambilBarangDariFirebase(showSuccess = true) {
     const querySnapshot = await getDocs(collection(db, "barang"));
-    barang = []; 
+    barang = [];
     querySnapshot.forEach((docu) => {
       const data = docu.data();
       data.firebaseId = docu.id;
@@ -1458,14 +1473,14 @@ setInterval(()=>{
     });
     localStorage.setItem(KEY.barang, JSON.stringify(barang));
     if (showSuccess) {
-      renderBarang(); 
+      renderBarang();
       Swal.fire("Sinkron Berhasil!", "Data barang berhasil diambil dari cloud!", "success");
     }
   }
   
   async function ambilJasaDariFirebase(showSuccess = true) {
     const querySnapshot = await getDocs(collection(db, "jasa"));
-    jasa = []; 
+    jasa = [];
     querySnapshot.forEach((docu) => {
       const data = docu.data();
       data.firebaseId = docu.id;
@@ -1473,7 +1488,7 @@ setInterval(()=>{
     });
     localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
     if (showSuccess) {
-      renderJasa(); 
+      renderJasa();
       Swal.fire("Sinkron Berhasil!", "Data jasa berhasil diambil dari cloud!", "success");
     }
   }
@@ -1489,16 +1504,16 @@ setInterval(()=>{
 
     try {
       await Promise.all([
-        ambilDariFirebase(false), 
-        ambilBarangDariFirebase(false), 
-        ambilJasaDariFirebase(false) 
+        ambilDariFirebase(false),
+        ambilBarangDariFirebase(false),
+        ambilJasaDariFirebase(false)
       ]);
 
       renderTransaksi();
       renderBarang();
       renderJasa();
-      renderDashboard(); 
-      renderDatalist(); 
+      renderDashboard();
+      renderDatalist();
 
       Swal.fire("Sinkron Berasil!", "Semua data telah diperbarui dari cloud!", "success");
 
@@ -1541,9 +1556,9 @@ setInterval(()=>{
       renderBarang();
       renderJasa();
       renderDashboard();
-      renderDatalist(); 
+      renderDatalist();
       
-      Swal.close(); 
+      Swal.close();
       console.log("Sinkronisasi otomatis selesai.");
 
     } catch (e) {
@@ -1552,6 +1567,19 @@ setInterval(()=>{
     }
   })();
 </script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+          console.log('ServiceWorker berhasil didaftarkan: ', registration);
+        })
+        .catch(error => {
+          console.log('Pendaftaran ServiceWorker gagal: ', error);
+        });
+    });
+  }
+</script>
 </body>
 </html>
-
