@@ -1,7 +1,6 @@
 const CACHE_NAME = 'bengkel-promotor-v1';
 
 // Aset-aset inti yang membentuk "App Shell"
-// Ini adalah semua file dari CDN yang Anda gunakan di <head>
 const urlsToCache = [
   '.', // Ini merujuk ke file HTML utama Anda (misal: index.html)
   'manifest.json', // File manifest yang baru Anda buat
@@ -27,23 +26,31 @@ self.addEventListener('install', event => {
   );
 });
 
-// 2. Strategi Fetch: Network First, Fallback to Cache
-// Ini akan selalu mencoba mengambil data terbaru dari network (Firebase).
-// Jika gagal (offline), ia akan menyajikan versi dari cache.
+// 2. Strategi Fetch: Network First, Fallback to Cache (SUDAH DIPERBAIKI)
 self.addEventListener('fetch', event => {
+  
+  // --- PERBAIKAN: Cek request method ---
+  // Jika ini bukan request GET, jangan coba cache.
+  // Langsung teruskan ke network dan jangan ganggu.
+  if (event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  // --- AKHIR PERBAIKAN ---
+
+  // Kode di bawah ini HANYA akan berjalan untuk request GET
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request) // Coba ambil dari network dulu
       .then(response => {
-        // Jika request berhasil, kloning dan simpan ke cache
+        // Jika sukses, kloning dan simpan ke cache
         const responseToCache = response.clone();
-        caches.open(CACHE_NAME)
-          .then(cache => {
-            cache.put(event.request, responseToCache);
-          });
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache); // Baris ini sekarang aman
+        });
         return response;
       })
       .catch(() => {
-        // Jika network gagal (offline), coba ambil dari cache
+        // Jika network gagal (offline), ambil dari cache
         return caches.match(event.request);
       })
   );
