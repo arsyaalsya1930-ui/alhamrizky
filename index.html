@@ -926,7 +926,15 @@ transForm.addEventListener('submit', (e)=>{
     transaksi.push(data);
     Swal.fire('Berhasil','Transaksi ditambahkan','success');
   } else {
-    // TODO: Fungsi edit ke Firebase
+    // PERUBAHAN: Panggil fungsi update Firebase
+    const oldData = transaksi[editTransIndex];
+    data.firebaseId = oldData.firebaseId; // Ambil firebaseId dari data lama
+    
+    if (window.updateTransaksiDiFirebase && data.firebaseId) {
+      window.updateTransaksiDiFirebase(data.firebaseId, data);
+    }
+    // AKHIR PERUBAHAN
+    
     transaksi[editTransIndex] = data;
     editTransIndex = null;
     Swal.fire('Berhasil','Transaksi diupdate','success');
@@ -1088,7 +1096,15 @@ barangForm.addEventListener('submit', (e)=>{
     barang.push(data);
     Swal.fire('Berhasil','Barang ditambahkan','success');
   } else {
-    // TODO: Fungsi edit ke Firebase
+    // PERUBAHAN: Panggil fungsi update Firebase
+    const oldData = barang[editBarangIndex];
+    data.firebaseId = oldData.firebaseId; // Ambil firebaseId
+    
+    if (window.updateBarangDiFirebase && data.firebaseId) {
+      window.updateBarangDiFirebase(data.firebaseId, data);
+    }
+    // AKHIR PERUBAHAN
+    
     barang[editBarangIndex] = data;
     editBarangIndex = null;
     Swal.fire('Berhasil','Barang diupdate','success');
@@ -1228,7 +1244,15 @@ jasaForm.addEventListener('submit',(e)=>{
     jasa.push(data);
     Swal.fire('Berhasil','Jasa ditambahkan','success');
   } else {
-    // TODO: Fungsi edit ke Firebase
+    // PERUBAHAN: Panggil fungsi update Firebase
+    const oldData = jasa[editJasaIndex];
+    data.firebaseId = oldData.firebaseId; // Ambil firebaseId
+    
+    if (window.updateJasaDiFirebase && data.firebaseId) {
+      window.updateJasaDiFirebase(data.firebaseId, data);
+    }
+    // AKHIR PERUBAHAN
+    
     jasa[editJasaIndex] = data;
     editJasaIndex = null;
     Swal.fire('Berhasil','Jasa diupdate','success');
@@ -1495,8 +1519,9 @@ setInterval(()=>{
 </script>
 
 <script type="module">
+  // PERUBAHAN: Import 'updateDoc'
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBFAkRDirMI7ImVpTy0Ak8CCKgim9MIGb8",
@@ -1532,6 +1557,40 @@ setInterval(()=>{
       await addDoc(collection(db, "jasa"), dataToSave);
     } catch (e) { console.error("Error adding jasa: ", e); }
   }
+  
+  /* --- FUNGSI BARU: UPDATE --- */
+  async function updateTransaksiDiFirebase(id, data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId; // Jangan simpan ID di dalam dokumen
+      const transDocRef = doc(db, "transaksi", id);
+      await updateDoc(transDocRef, dataToSave);
+    } catch (e) {
+      console.error("Error updating transaksi: ", e);
+    }
+  }
+  async function updateBarangDiFirebase(id, data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId;
+      const barangDocRef = doc(db, "barang", id);
+      await updateDoc(barangDocRef, dataToSave);
+    } catch (e) {
+      console.error("Error updating barang: ", e);
+    }
+  }
+  async function updateJasaDiFirebase(id, data) {
+    try {
+      const dataToSave = { ...data };
+      delete dataToSave.firebaseId;
+      const jasaDocRef = doc(db, "jasa", id);
+      await updateDoc(jasaDocRef, dataToSave);
+    } catch (e) {
+      console.error("Error updating jasa: ", e);
+    }
+  }
+  /* --- AKHIR FUNGSI BARU --- */
+
 
   /* --- FUNGSI HAPUS (Tetap Sama) --- */
   async function hapusTransaksiDariFirebase(id) {
@@ -1633,6 +1692,10 @@ setInterval(()=>{
   window.hapusTransaksiDariFirebase = hapusTransaksiDariFirebase;
   window.hapusBarangDariFirebase = hapusBarangDariFirebase;
   window.hapusJasaDariFirebase = hapusJasaDariFirebase;
+  // PERUBAHAN: Ekspos fungsi update
+  window.updateTransaksiDiFirebase = updateTransaksiDiFirebase;
+  window.updateBarangDiFirebase = updateBarangDiFirebase;
+  window.updateJasaDiFirebase = updateJasaDiFirebase;
 
   
   // FUNGSI BARU: Untuk menghapus data transaksi lebih dari 60 hari
