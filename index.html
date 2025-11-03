@@ -15,8 +15,8 @@
 
 <style>
   /* ---------------------------
-     TEMA MODERN & CLEAN
-     --------------------------- */
+      TEMA MODERN & CLEAN
+      --------------------------- */
   :root{
     --primary-1: #0052cc;
     --primary-2: #007bff;
@@ -59,8 +59,8 @@
   }
   
   /* ---------------------------
-     NAVIGASI BAWAH
-     --------------------------- */
+      NAVIGASI BAWAH
+      --------------------------- */
   nav#navTabs {
     position: fixed;
     bottom: 0;
@@ -306,22 +306,24 @@
         </select>
     </div>
     <div class="grid" id="dashboardCards">
+      <!-- PERUBAHAN: Label kartu diubah agar lebih spesifik -->
       <div class="card">
-        <h3><i class="fa-solid fa-calendar-week"></i>Total Transaksi (Rentang)</h3>
+        <h3><i class="fa-solid fa-wallet"></i>Keuntungan Bersih (Barang)</h3>
         <p id="cardTotalHari">Rp 0</p>
       </div>
       <div class="card">
-        <h3><i class="fa-solid fa-store"></i>Total Bagian Bengkel</h3>
+        <h3><i class="fa-solid fa-store"></i>Bagian Bengkel (Jasa)</h3>
         <p id="cardBengkel">Rp 0</p>
       </div>
       <div class="card">
-        <h3><i class="fa-solid fa-users-gear"></i>Total Mekanik (Semua)</h3>
+        <h3><i class="fa-solid fa-users-gear"></i>Bagian Mekanik (Jasa)</h3>
         <p id="cardMekanikTotal">Rp 0</p>
       </div>
       <div class="card">
-        <h3><i class="fa-solid fa-wallet"></i>Total Keseluruhan</h3>
+        <h3><i class="fa-solid fa-cash-register"></i>Total Transaksi (Rentang)</h3>
         <p id="cardGrandTotal">Rp 0</p>
       </div>
+      <!-- AKHIR PERUBAHAN -->
     </div>
 
     <div style="margin-bottom:10px">
@@ -359,6 +361,7 @@
       <label>Harga *</label>
       <input type="tel" id="transHarga" required inputmode="numeric">
 
+      <!-- Bagian Mekanik (HANYA UNTUK JASA) -->
       <div id="transMekanikSection">
         <label>Mekanik (opsional)</label>
         <div style="display:flex;gap:8px">
@@ -370,6 +373,14 @@
         <input type="tel" id="transPersen" placeholder="Contoh: 10" inputmode="numeric">
       </div>
 
+      <!-- PERUBAHAN: Bagian Keuntungan (HANYA UNTUK BARANG) -->
+      <div id="transBarangSection" style="display:none;">
+          <label style="margin-top: 10px;">Persentase Keuntungan Bengkel (%) (opsional)</label>
+          <input type="tel" id="transPersenUntung" placeholder="Contoh: 10" inputmode="numeric">
+      </div>
+      <!-- AKHIR PERUBAHAN -->
+
+      <!-- Hasil Kalkulasi JASA -->
       <div id="transCalcResult" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
         <div style="display: flex; justify-content: space-between; font-size: 14px;">
           <span style="color: var(--muted);">Bagian Mekanik:</span>
@@ -380,6 +391,16 @@
           <strong id="calcBengkel" style="color: #1a202c;">Rp 0</strong>
         </div>
       </div>
+
+      <!-- PERUBAHAN: Hasil Kalkulasi BARANG -->
+      <div id="transCalcResultBarang" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; font-size: 14px;">
+              <span style="color: var(--muted);">Keuntungan Bengkel:</span>
+              <strong id="calcUntungBengkel" style="color: var(--primary-1);">Rp 0</strong>
+          </div>
+      </div>
+      <!-- AKHIR PERUBAHAN -->
+
 
       <div style="display:flex;gap:8px;margin-top:15px">
         <button type="submit">Tambah Transaksi</button>
@@ -426,8 +447,12 @@
     </div>
 
     <div class="controls">
-      <input type="text" id="searchBarang" placeholder="Cari barang...">
-      <button class="ghost small" id="btnSortBarang">Urut A→Z</button>
+      <input type="text" id="searchBarang" placeholder="Cari (nama, ket)...">
+      <select id="sortBarang" style="flex: 0 1 150px; margin-bottom: 0;">
+        <option value="az">Urut A→Z</option>
+        <option value="price_asc">Harga Terendah</option>
+        <option value="price_desc">Harga Tertinggi</option>
+      </select>
     </div>
 
     <div style="overflow:auto">
@@ -528,33 +553,26 @@ function getStartOfMonthISO() {
   return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
 }
 
-// FUNGSI BARU: Untuk mendapatkan tanggal N hari yang lalu
 function getISODateDaysAgo(days) {
   const date = new Date();
   date.setDate(date.getDate() - days);
   return date.toISOString().split('T')[0];
 }
 
-// FUNGSI BARU: Untuk menghitung rentang tanggal dari dropdown
 function getTanggalRentang(rentang) {
   const sampai = todayISO();
-  // 3 hari terakhir (termasuk hari ini)
   if (rentang === '3d') {
     return { dari: getISODateDaysAgo(2), sampai }; 
   }
-  // 7 hari terakhir (termasuk hari ini)
   if (rentang === '7d') {
     return { dari: getISODateDaysAgo(6), sampai }; 
   }
-  // 30 hari terakhir (termasuk hari ini)
   if (rentang === '30d') {
     return { dari: getISODateDaysAgo(29), sampai }; 
   }
-  // 'all'
   return { dari: '2000-01-01', sampai: '2999-12-31' }; // Rentang "semua"
 }
 
-// Fungsi parsePriceTextToNumber (Tetap sama)
 function parsePriceTextToNumber(str){
   if(str==null) return 0;
   let s = String(str).toLowerCase().trim();
@@ -583,7 +601,7 @@ function formatCurrency(num){
 }
 
 /* ---------------------------
-  Data storage (localStorage) (Tetap sama)
+  Data storage (localStorage)
   --------------------------- */
 const KEY = {
   trans: 'bp_transaksi_v1',
@@ -602,7 +620,7 @@ if(mekanik.length===0) {
 }
 
 /* ---------------------------
-  Navigation (Tetap sama)
+  Navigation
   --------------------------- */
 const tabs = $$('#navTabs .tab');
 tabs.forEach(t => t.addEventListener('click', ()=> {
@@ -619,12 +637,11 @@ tabs.forEach(t => t.addEventListener('click', ()=> {
   Initialize defaults
   --------------------------- */
 $('#transTanggal').value = todayISO();
-// Hapus set tanggal dashboard manual, karena defaultnya dari <select>
 $('#filterDari').value = '';
 $('#filterSampai').value = '';
 
 /* ---------------------------
-  Dashboard Sync/Clear Buttons (Tetap sama)
+  Dashboard Sync/Clear Buttons
   --------------------------- */
 $('#btnHapusLokal').addEventListener('click', () => {
   Swal.fire({
@@ -656,10 +673,8 @@ function renderMekanikOptions(){
     const opt = document.createElement('option'); opt.value = m; opt.textContent = m;
     sel.appendChild(opt);
   });
-  // Hapus renderMekanikList(), karena akan dipanggil oleh renderDashboard()
 }
 
-// PERUBAHAN: Fungsi ini sekarang menerima tanggal sebagai argumen
 function renderMekanikList(tglDari, tglSampai){
   const area = $('#mekanikListArea');
   const totals = {};
@@ -705,7 +720,6 @@ function renderMekanikList(tglDari, tglSampai){
   
   area.innerHTML = html;
   
-  // PERUBAHAN: Gunakan teks dari dropdown untuk judul
   const rentangTeks = $('#dashboardRentang').options[$('#dashboardRentang').selectedIndex].text;
   $('#mekanikListTitle').innerText = `Pendapatan Per Mekanik (${rentangTeks})`;
 }
@@ -749,41 +763,76 @@ $('#btnBatalTransaksi').addEventListener('click', () => {
   resetTransaksiForm();
 });
 
-function updateTransaksiCalculation() {
-  const jenis = $('#transJenis').value;
-  const hargaNum = parsePriceTextToNumber($('#transHarga').value);
-  const persenVal = parseFloat($('#transPersen').value) || 0;
-  const resultDiv = $('#transCalcResult');
-  
-  if (jenis === 'Jasa' && hargaNum > 0 && persenVal > 0) {
-    const bagianMekanik = Math.round(hargaNum * (persenVal / 100));
-    const bagianBengkel = hargaNum - bagianMekanik;
-    
-    $('#calcMekanik').textContent = formatCurrency(bagianMekanik);
-    $('#calcBengkel').textContent = formatCurrency(bagianBengkel);
-    resultDiv.style.display = 'block';
-  } else {
-    resultDiv.style.display = 'none';
-    $('#calcMekanik').textContent = 'Rp 0';
-    $('#calcBengkel').textContent = 'Rp 0';
-  }
+// PERUBAHAN: Fungsi kalkulasi dipecah
+function updateTransaksiCalculations() {
+    const jenis = $('#transJenis').value;
+    if (jenis === 'Jasa') {
+        updateTransaksiCalculationJasa();
+    } else { // Barang
+        updateTransaksiCalculationBarang();
+    }
 }
 
-$('#transHarga').addEventListener('input', updateTransaksiCalculation);
-$('#transPersen').addEventListener('input', updateTransaksiCalculation);
-$('#transJenis').addEventListener('change', updateTransaksiCalculation);
+function updateTransaksiCalculationJasa() {
+    const hargaNum = parsePriceTextToNumber($('#transHarga').value);
+    const persenVal = parseFloat($('#transPersen').value) || 0;
+    const resultDiv = $('#transCalcResult');
+    
+    if (hargaNum > 0 && persenVal > 0) {
+        const bagianMekanik = Math.round(hargaNum * (persenVal / 100));
+        const bagianBengkel = hargaNum - bagianMekanik;
+        
+        $('#calcMekanik').textContent = formatCurrency(bagianMekanik);
+        $('#calcBengkel').textContent = formatCurrency(bagianBengkel);
+        resultDiv.style.display = 'block';
+    } else {
+        resultDiv.style.display = 'none';
+        $('#calcMekanik').textContent = 'Rp 0';
+        $('#calcBengkel').textContent = 'Rp 0';
+    }
+}
+
+function updateTransaksiCalculationBarang() {
+    const hargaNum = parsePriceTextToNumber($('#transHarga').value);
+    const persenUntungVal = parseFloat($('#transPersenUntung').value) || 0;
+    const resultDiv = $('#transCalcResultBarang');
+
+    if (hargaNum > 0 && persenUntungVal > 0) {
+        const keuntunganBengkel = Math.round(hargaNum * (persenUntungVal / 100));
+        $('#calcUntungBengkel').textContent = formatCurrency(keuntunganBengkel);
+        resultDiv.style.display = 'block';
+    } else {
+        resultDiv.style.display = 'none';
+        $('#calcUntungBengkel').textContent = 'Rp 0';
+    }
+}
+// AKHIR PERUBAHAN
+
+// PERUBAHAN: Listener input diperbarui
+$('#transHarga').addEventListener('input', updateTransaksiCalculations);
+$('#transPersen').addEventListener('input', updateTransaksiCalculationJasa);
+$('#transPersenUntung').addEventListener('input', updateTransaksiCalculationBarang);
+// AKHIR PERUBAHAN
 
 
+// PERUBAHAN: Fungsi ini diperbarui untuk menangani UI Jasa vs Barang
 function applyJenisVisibility(){
   const jenis = $('#transJenis').value;
   if(jenis === 'Barang'){
     $('#transMekanikSection').style.display = 'none';
-  } else {
+    $('#transBarangSection').style.display = 'block'; // TAMPILKAN profit barang
+    $('#transCalcResult').style.display = 'none'; // SEMBUNYIKAN kalkulasi jasa
+    $('#transCalcResultBarang').style.display = 'none'; // Sembunyikan by default
+  } else { // Jasa
     $('#transMekanikSection').style.display = 'block';
+    $('#transBarangSection').style.display = 'none'; // SEMBUNYIKAN profit barang
+    $('#transCalcResult').style.display = 'none'; // Sembunyikan by default
+    $('#transCalcResultBarang').style.display = 'none'; // SEMBUNYIKAN kalkulasi barang
   }
   renderDatalist();
-  updateTransaksiCalculation();
+  updateTransaksiCalculations(); // Panggil router kalkulasi utama
 }
+// AKHIR PERUBAHAN
 $('#transJenis').addEventListener('change', applyJenisVisibility);
 
 function renderDatalist() {
@@ -818,31 +867,57 @@ $('#transNama').addEventListener('input', (e) => {
       $('#transHarga').value = item.harga || '';
     }
   }
-  updateTransaksiCalculation();
+  updateTransaksiCalculations();
 });
 
 
+// PERUBAHAN: Submit handler diperbarui
 transForm.addEventListener('submit', (e)=>{
   e.preventDefault();
   const tanggal = $('#transTanggal').value || todayISO();
   const jenis = $('#transJenis').value;
   const nama = $('#transNama').value.trim();
   const hargaText = $('#transHarga').value.trim();
+  
   if(!nama || !hargaText){
     Swal.fire('Perhatian','Nama dan Harga wajib diisi','warning'); return;
   }
-  const mekanikVal = $('#transMekanik').value || '';
-  let persenVal = parseFloat($('#transPersen').value) || 0;
+  
   const hargaNum = parsePriceTextToNumber(hargaText);
-  let bagianMekanik = 0, bagianBengkel = hargaNum;
-  if(jenis === 'Jasa' && mekanikVal && persenVal > 0){
-    bagianMekanik = Math.round(hargaNum * (persenVal/100));
-    bagianBengkel = hargaNum - bagianMekanik;
-  } else {
-    bagianMekanik = 0;
-    bagianBengkel = hargaNum;
+  let mekanikVal = '', persenVal = 0, bagianMekanik = 0, bagianBengkel = 0, persenUntungVal = 0;
+
+  if(jenis === 'Jasa'){
+      mekanikVal = $('#transMekanik').value || '';
+      persenVal = parseFloat($('#transPersen').value) || 0;
+      if(mekanikVal && persenVal > 0){
+          bagianMekanik = Math.round(hargaNum * (persenVal/100));
+          bagianBengkel = hargaNum - bagianMekanik;
+      } else {
+          bagianMekanik = 0;
+          bagianBengkel = hargaNum; // Jika tidak ada mekanik, semua ke bengkel
+      }
+  } else { // Barang
+      persenUntungVal = parseFloat($('#transPersenUntung').value) || 0;
+      if(persenUntungVal > 0) {
+          bagianBengkel = Math.round(hargaNum * (persenUntungVal/100)); // bagianBengkel diisi PROFIT
+      } else {
+          bagianBengkel = 0; // Tidak ada profit
+      }
+      bagianMekanik = 0; // Barang tidak ada bagian mekanik
   }
-  const data = {tanggal, jenis, nama, hargaText, hargaNum, mekanik: mekanikVal, persen: persenVal, bagianMekanik, bagianBengkel};
+
+  const data = {
+      tanggal, 
+      jenis, 
+      nama, 
+      hargaText, 
+      hargaNum, 
+      mekanik: mekanikVal, 
+      persen: persenVal, 
+      persenUntung: persenUntungVal, // Field BARU
+      bagianMekanik, 
+      bagianBengkel // REUSED untuk profit barang ATAU share bengkel jasa
+  };
   
   if(editTransIndex === null) {
     if (window.simpanKeFirebase) {
@@ -864,15 +939,20 @@ transForm.addEventListener('submit', (e)=>{
   renderTransaksi();
   renderDashboard();
 });
+// AKHIR PERUBAHAN
 
+// PERUBAHAN: clearTransaksiFormInputs diperbarui
 function clearTransaksiFormInputs() {
   transForm.reset();
   $('#transTanggal').value = todayISO();
+  $('#transPersenUntung').value = ''; // TAMBAHKAN
   applyJenisVisibility();
   editTransIndex = null;
   $('#transCalcResult').style.display = 'none';
+  $('#transCalcResultBarang').style.display = 'none'; // TAMBAHKAN
   $('#formTransaksi button[type="submit"]').textContent = 'Tambah Transaksi';
 }
+// AKHIR PERUBAHAN
 
 function resetTransaksiForm() {
   clearTransaksiFormInputs();
@@ -880,7 +960,7 @@ function resetTransaksiForm() {
   $('#btnTampilFormTransaksi').parentElement.style.display = 'flex';
 }
 
-// PERBAIKAN: Fungsi ini telah diperbarui untuk mencegah error 'localeCompare'
+// PERUBAHAN: renderTransaksi diperbarui untuk kolom %
 function renderTransaksi(filterStart, filterEnd, search=''){
   const tbody = $('#tableTrans tbody'); tbody.innerHTML='';
   let filtered = transaksi.slice();
@@ -889,13 +969,11 @@ function renderTransaksi(filterStart, filterEnd, search=''){
   }
   if(search) filtered = filtered.filter(t => t.nama.toLowerCase().includes(search.toLowerCase()));
   
-  // PERBAIKAN: Fungsi sort dibuat lebih aman
   filtered.sort((a, b) => {
     if (!b || !b.tanggal) return 1; 
     if (!a || !a.tanggal) return -1;
     return b.tanggal.localeCompare(a.tanggal);
   });
-  // AKHIR PERBAIKAN
 
   filtered.forEach((t)=>{
     if (!t) return; 
@@ -905,6 +983,9 @@ function renderTransaksi(filterStart, filterEnd, search=''){
     const jenis = t.jenis || 'N/A';
     const nama = t.nama || 'Tanpa Nama';
     const hargaText = t.hargaText || 'Rp 0';
+    
+    // Tentukan % yang akan ditampilkan
+    const persenDisplay = (t.jenis === 'Barang' ? t.persenUntung : t.persen) || '-';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${tanggal}</td>
@@ -912,7 +993,7 @@ function renderTransaksi(filterStart, filterEnd, search=''){
       <td>${nama}</td>
       <td>${hargaText}</td>
       <td>${t.mekanik || '-'}</td>
-      <td>${t.persen || '-'}</td>
+      <td>${persenDisplay}</td> <!-- DIPERBARUI -->
       <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td>
       <td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>
       <td class="actions">
@@ -922,8 +1003,10 @@ function renderTransaksi(filterStart, filterEnd, search=''){
     tbody.appendChild(tr);
   });
 }
+// AKHIR PERUBAHAN
 
 
+// PERUBAHAN: tableTrans 'edit' click handler diperbarui
 $('#tableTrans').addEventListener('click', (e)=>{
   const btn = e.target.closest('button');
   if(!btn) return;
@@ -943,6 +1026,7 @@ $('#tableTrans').addEventListener('click', (e)=>{
     $('#transHarga').value = t.hargaText;
     $('#transMekanik').value = t.mekanik || '';
     $('#transPersen').value = t.persen || '';
+    $('#transPersenUntung').value = t.persenUntung || ''; // TAMBAHKAN
     
     applyJenisVisibility();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -970,6 +1054,7 @@ $('#tableTrans').addEventListener('click', (e)=>{
     });
   }
 });
+// AKHIR PERUBAHAN
 
 $('#btnApplyFilter').addEventListener('click', ()=>{
   const d1 = $('#filterDari').value, d2 = $('#filterSampai').value;
@@ -1038,15 +1123,34 @@ $('#btnBatalBarang').addEventListener('click', () => {
 
 function renderBarang(){
   const tbody = $('#tableBarang tbody'); tbody.innerHTML='';
-  const search = $('#searchBarang').value.trim().toLowerCase();
   
-  const filteredBarang = barang.filter(b => !search || b.nama.toLowerCase().includes(search));
-  filteredBarang.sort((a,b)=> a.nama.toLowerCase().localeCompare(b.nama.toLowerCase()));
+  const search = $('#searchBarang').value.trim().toLowerCase();
+  const searchWords = search.split(' ').filter(w => w.length > 0);
+  
+  const sortCriteria = $('#sortBarang').value;
+  
+  const filteredBarang = barang.filter(b => {
+    if (searchWords.length === 0) return true;
+    
+    const searchableText = `${(b.nama || '').toLowerCase()} ${(b.ket || '').toLowerCase()}`;
+    
+    return searchWords.every(word => searchableText.includes(word));
+  });
+  
+  const getPrice = (item) => parsePriceTextToNumber(item.jual) || parsePriceTextToNumber(item.pasang) || 0;
+
+  if (sortCriteria === 'az') {
+    filteredBarang.sort((a,b)=> (a.nama || '').toLowerCase().localeCompare((b.nama || '').toLowerCase()));
+  } else if (sortCriteria === 'price_asc') {
+    filteredBarang.sort((a,b)=> getPrice(a) - getPrice(b));
+  } else if (sortCriteria === 'price_desc') {
+    filteredBarang.sort((a,b)=> getPrice(b) - getPrice(a));
+  }
 
   filteredBarang.forEach((b)=>{
     const originalIndex = barang.findIndex(item => item === b);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${b.nama}</td><td>${b.jual||'-'}</td><td>${b.pasang||'-'}</td><td>${b.ket||'-'}</td>
+    tr.innerHTML = `<td>${b.nama || ''}</td><td>${b.jual||'-'}</td><td>${b.pasang||'-'}</td><td>${b.ket||'-'}</td>
       <td class="actions">
         <button class="ghost small btn-icon btn-edit" data-i="${originalIndex}" data-act="edit" title="Edit"><i class="fa-solid fa-pencil"></i></button>
         <button class="ghost small btn-icon btn-danger" data-i="${originalIndex}" data-act="del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
@@ -1099,8 +1203,9 @@ $('#tableBarang').addEventListener('click',(e)=>{
     });
   }
 });
+
 $('#searchBarang').addEventListener('input', renderBarang);
-$('#btnSortBarang').addEventListener('click', ()=>{ renderBarang(); });
+$('#sortBarang').addEventListener('change', renderBarang);
 
 /* ---------------------------
   Jasa
@@ -1220,7 +1325,7 @@ $('#searchJasa').addEventListener('input', renderJasa);
 $('#btnSortJasa').addEventListener('click', ()=>{ renderJasa(); });
 
 /* ---------------------------
-  Laporan (chart) (Tetap sama)
+  Laporan (chart)
   --------------------------- */
 const ctx = document.getElementById('lapChart').getContext('2d');
 let lapChart = new Chart(ctx, {
@@ -1245,21 +1350,28 @@ function renderLaporan(dari,sampai){
   filtered.sort((a,b)=> a.tanggal.localeCompare(b.tanggal));
   const tbody = $('#tableLaporan tbody'); tbody.innerHTML='';
   let totalBengkel=0, totalMekanik=0, totalAll=0;
+  
+  // PERUBAHAN: totalBengkel (total profit) dihitung dengan benar
   filtered.forEach(t=>{
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${t.tanggal}</td><td>${t.jenis}</td><td>${t.nama}</td><td>${t.hargaText}</td><td>${t.mekanik || '-'}</td>
       <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td><td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>`;
     tbody.appendChild(tr);
-    totalBengkel += Number(t.bagianBengkel || 0);
+    
+    // t.bagianBengkel sekarang berisi profit barang ATAU share jasa
+    totalBengkel += Number(t.bagianBengkel || 0); 
     totalMekanik += Number(t.bagianMekanik || 0);
     totalAll += Number(t.hargaNum || 0);
   });
+  // AKHIR PERUBAHAN
+  
   const perMekanik = {};
   mekanik.forEach(m=>perMekanik[m]=0);
   filtered.forEach(t => { if(t.mekanik){ perMekanik[t.mekanik] = (perMekanik[t.mekanik]||0) + Number(t.bagianMekanik || 0); }});
+  
   let rHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">`;
-  rHtml += `<div><strong>Total Pendapatan (rentang)</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalAll)}</div></div>`;
-  rHtml += `<div><strong>Total Bagian Bengkel</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalBengkel)}</div></div>`;
+  rHtml += `<div><strong>Total Pendapatan (Gross)</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalAll)}</div></div>`;
+  rHtml += `<div><strong>Total Keuntungan Bengkel</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalBengkel)}</div></div>`;
   rHtml += `<div><strong>Total Bagian Mekanik</strong><div style="font-size:18px; color: var(--primary-1); font-weight: 700;">${formatCurrency(totalMekanik)}</div></div>`;
   rHtml += `</div><hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;"><div style="margin-top:8px">`;
   rHtml += `<strong style="font-size: 13px; color: var(--muted);">Rincian Per Mekanik:</strong>`;
@@ -1310,33 +1422,50 @@ $('#btnExportLaporan').addEventListener('click', ()=>{
 /* ---------------------------
   Dashboard rendering
   --------------------------- */
-// PERUBAHAN: Fungsi ini sekarang mengambil rentang dari dropdown
+// PERUBAHAN: Fungsi renderDashboard diperbarui
 function renderDashboard(){
-  // 1. Baca dari select box
   const rentang = $('#dashboardRentang').value;
-  // 2. Dapatkan tanggal
   const { dari: tglDari, sampai: tglSampai } = getTanggalRentang(rentang);
   
-  let totalRentang=0, totalBengkel=0, totalMekanik=0;
-  
-  $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-calendar-week"></i> Total Transaksi (Rentang)`;
+  let totalRentang=0, totalMekanik=0, totalBengkelJasa = 0, totalKeuntunganBarang = 0; // Pisahkan keuntungan barang
+
+  // Setel label kartu (dipindahkan ke sini agar konsisten)
+  $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-wallet"></i> Keuntungan Bersih (Barang)`; // Label diubah
+  $('#cardBengkel').previousElementSibling.innerHTML = `<i class="fa-solid fa-store"></i> Bagian Bengkel (Jasa)`;
+  $('#cardMekanikTotal').previousElementSibling.innerHTML = `<i class="fa-solid fa-users-gear"></i> Bagian Mekanik (Jasa)`;
+  $('#cardGrandTotal').previousElementSibling.innerHTML = `<i class="fa-solid fa-cash-register"></i> Total Transaksi (Rentang)`;
 
   transaksi.forEach(t => {
-    // Pastikan tanggal ada sebelum membandingkan
     if (t && t.tanggal && t.tanggal >= tglDari && t.tanggal <= tglSampai){
-      totalRentang += Number(t.hargaNum || 0);
-      totalBengkel += Number(t.bagianBengkel || 0);
-      totalMekanik += Number(t.bagianMekanik || 0);
+      totalRentang += Number(t.hargaNum || 0); // Total penjualan kotor
+      totalMekanik += Number(t.bagianMekanik || 0); // Total bagian mekanik (hanya dari Jasa)
+      
+      // Hitung HANYA bagian bengkel dari JASA
+      if (t.jenis === 'Jasa') {
+        totalBengkelJasa += Number(t.bagianBengkel || 0);
+      } 
+      // Hitung HANYA keuntungan dari BARANG
+      else if (t.jenis === 'Barang') {
+        totalKeuntunganBarang += Number(t.bagianBengkel || 0); // 'bagianBengkel' dipakai untuk profit barang
+      }
     }
   });
-  $('#cardTotalHari').innerText = formatCurrency(totalRentang);
-  $('#cardBengkel').innerText = formatCurrency(totalBengkel);
+  
+  // Kartu 1: Keuntungan Bersih (HANYA Barang)
+  $('#cardTotalHari').innerText = formatCurrency(totalKeuntunganBarang); 
+  
+  // Kartu 2: Bagian Bengkel (HANYA Jasa)
+  $('#cardBengkel').innerText = formatCurrency(totalBengkelJasa);
+  
+  // Kartu 3: Bagian Mekanik (HANYA Jasa)
   $('#cardMekanikTotal').innerText = formatCurrency(totalMekanik);
+  
+  // Kartu 4: Total Transaksi (Penjualan Kotor)
   $('#cardGrandTotal').innerText = formatCurrency(totalRentang);
   
-  // 3. Kirim tanggal ke renderMekanikList
   renderMekanikList(tglDari, tglSampai);
 }
+// AKHIR PERUBAHAN
 
 /* ---------------------------
   Initial rendering
@@ -1346,26 +1475,22 @@ renderTransaksi();
 renderBarang();
 renderJasa();
 renderDatalist();
-renderDashboard(); // Sekarang ini akan me-render dashboard & list mekanik
+renderDashboard(); 
 
-// PERUBAHAN: Hapus listener form lama dan tambahkan listener 'change' ke dropdown
-// HAPUS: $('#formFilterDashboard').addEventListener('submit', (e) => { ... });
 $('#dashboardRentang').addEventListener('change', renderDashboard);
 
 
-$('footer').innerHTML = `&copy; ${new Date().getFullYear()} V1.1 Bengkel Promotor. Dibuat untuk pribadi.`;
+$('footer').innerHTML = `&copy; ${new Date().getFullYear()} V1.2 Bengkel Promotor. Dibuat untuk pribadi.`;
 
 
 /* ---------------------------
-  Save periodically (Tetap sama)
+  Save periodically
   --------------------------- */
 setInterval(()=>{
   localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
   localStorage.setItem(KEY.barang, JSON.stringify(barang));
   localStorage.setItem(KEY.jasa, JSON.stringify(jasa));
 }, 3000);
-
-/* Swipe gesture DIHAPUS */
 
 </script>
 
@@ -1483,7 +1608,6 @@ setInterval(()=>{
         ambilJasaDariFirebase(false)
       ]);
 
-      // PERUBAHAN: Panggil fungsi hapus data lama setelah sync
       await hapusDataLama();
 
       renderTransaksi();
@@ -1537,21 +1661,16 @@ setInterval(()=>{
       const deletePromises = [];
       for (const t of transaksiLama) {
         if (t.firebaseId && window.hapusTransaksiDariFirebase) {
-          // Kumpulkan semua promise penghapusan
           deletePromises.push(window.hapusTransaksiDariFirebase(t.firebaseId));
         }
       }
-      // Jalankan semua penghapusan di Firebase secara paralel
       await Promise.all(deletePromises);
 
-      // Update data lokal HANYA setelah Firebase berhasil
       transaksi = transaksiBaru;
       localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
 
       console.log(`Berhasil menghapus ${transaksiLama.length} data lama.`);
-      // Tutup swal loading
       Swal.close();
-      // Beri notifikasi singkat
       Swal.fire({
           toast: true,
           position: 'top-end',
@@ -1568,7 +1687,6 @@ setInterval(()=>{
   }
   
   /* --- SINKRONISASI OTOMATIS SAAT MEMBUKA APLIKASI --- */
-  // PERUBAHAN: Ditambahkan fungsi hapusDataLama()
   (async () => {
     console.log("Menjalankan sinkronisasi otomatis...");
     Swal.fire({
@@ -1585,13 +1703,11 @@ setInterval(()=>{
         ambilJasaDariFirebase(false)
       ]);
       
-      Swal.close(); // Tutup 'Sinkronisasi Otomatis'
+      Swal.close(); 
       console.log("Sinkronisasi otomatis selesai.");
 
-      // Panggil fungsi penghapusan SETELAH sync
       await hapusDataLama(); 
 
-      // Render ulang semua data setelah fetch DAN penghapusan
       renderTransaksi();
       renderBarang();
       renderJasa();
@@ -1602,7 +1718,6 @@ setInterval(()=>{
       console.error("Gagal sinkron otomatis:", e);
       Swal.fire("Gagal Sinkron", "Gagal mengambil data cloud. Memuat data lokal yang ada.", "error");
       
-      // Tetap render data lokal meskipun gagal sinkron
       renderTransaksi();
       renderBarang();
       renderJasa();
@@ -1627,3 +1742,4 @@ setInterval(()=>{
 </script>
 </body>
 </html>
+
