@@ -248,14 +248,18 @@
     vertical-align: middle;
   }
   tr:last-child td { border-bottom: 0; }
+  
+  /* --- PERUBAHAN UNTUK MEMPERTEGAS HEADER TABEL --- */
   th{
-    background: #f9fafb;
-    color:var(--muted);
-    font-weight:600;
+    background: #5c7abf; /* Latar belakang lebih tegas */
+    color: #ffffff;      /* Warna teks lebih gelap */
+    font-weight: 700;     /* Teks lebih tebal */
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 12px;      /* Ukuran font sedikit lebih besar */
     letter-spacing: 0.5px;
   }
+  /* --- AKHIR PERUBAHAN --- */
+  
   .actions{
     display: flex;
     gap: 6px;
@@ -276,6 +280,14 @@
     .controls { flex-wrap: wrap; }
     .controls input[type="date"] { min-width: 120px; }
   }
+  
+  /* --- TAMBAHAN STYLE UNTUK BARIS BARANG --- */
+  tr.jenis-barang {
+    background-color: #f0f6ff; /* Biru muda yang lembut */
+    color: var(--text-color, #1a202c); /* Pastikan warna teks normal */
+  }
+  /* --- AKHIR TAMBAHAN STYLE --- */
+  
 </style>
 </head>
 <body>
@@ -763,7 +775,6 @@ $('#btnBatalTransaksi').addEventListener('click', () => {
   resetTransaksiForm();
 });
 
-// PERUBAHAN: Fungsi kalkulasi dipecah
 function updateTransaksiCalculations() {
     const jenis = $('#transJenis').value;
     if (jenis === 'Jasa') {
@@ -806,16 +817,12 @@ function updateTransaksiCalculationBarang() {
         $('#calcUntungBengkel').textContent = 'Rp 0';
     }
 }
-// AKHIR PERUBAHAN
 
-// PERUBAHAN: Listener input diperbarui
 $('#transHarga').addEventListener('input', updateTransaksiCalculations);
 $('#transPersen').addEventListener('input', updateTransaksiCalculationJasa);
 $('#transPersenUntung').addEventListener('input', updateTransaksiCalculationBarang);
-// AKHIR PERUBAHAN
 
 
-// PERUBAHAN: Fungsi ini diperbarui untuk menangani UI Jasa vs Barang
 function applyJenisVisibility(){
   const jenis = $('#transJenis').value;
   if(jenis === 'Barang'){
@@ -832,7 +839,6 @@ function applyJenisVisibility(){
   renderDatalist();
   updateTransaksiCalculations(); // Panggil router kalkulasi utama
 }
-// AKHIR PERUBAHAN
 $('#transJenis').addEventListener('change', applyJenisVisibility);
 
 function renderDatalist() {
@@ -871,7 +877,6 @@ $('#transNama').addEventListener('input', (e) => {
 });
 
 
-// PERUBAHAN: Submit handler diperbarui
 transForm.addEventListener('submit', (e)=>{
   e.preventDefault();
   const tanggal = $('#transTanggal').value || todayISO();
@@ -923,17 +928,16 @@ transForm.addEventListener('submit', (e)=>{
     if (window.simpanKeFirebase) {
       window.simpanKeFirebase(data);
     }
-    transaksi.push(data);
+    // PERUBAHAN: Gunakan unshift() untuk menambah ke awal array
+    transaksi.unshift(data);
     Swal.fire('Berhasil','Transaksi ditambahkan','success');
   } else {
-    // PERUBAHAN: Panggil fungsi update Firebase
     const oldData = transaksi[editTransIndex];
-    data.firebaseId = oldData.firebaseId; // Ambil firebaseId dari data lama
+    data.firebaseId = oldData.firebaseId; 
     
     if (window.updateTransaksiDiFirebase && data.firebaseId) {
       window.updateTransaksiDiFirebase(data.firebaseId, data);
     }
-    // AKHIR PERUBAHAN
     
     transaksi[editTransIndex] = data;
     editTransIndex = null;
@@ -947,20 +951,17 @@ transForm.addEventListener('submit', (e)=>{
   renderTransaksi();
   renderDashboard();
 });
-// AKHIR PERUBAHAN
 
-// PERUBAHAN: clearTransaksiFormInputs diperbarui
 function clearTransaksiFormInputs() {
   transForm.reset();
   $('#transTanggal').value = todayISO();
-  $('#transPersenUntung').value = ''; // TAMBAHKAN
+  $('#transPersenUntung').value = ''; 
   applyJenisVisibility();
   editTransIndex = null;
   $('#transCalcResult').style.display = 'none';
-  $('#transCalcResultBarang').style.display = 'none'; // TAMBAHKAN
+  $('#transCalcResultBarang').style.display = 'none'; 
   $('#formTransaksi button[type="submit"]').textContent = 'Tambah Transaksi';
 }
-// AKHIR PERUBAHAN
 
 function resetTransaksiForm() {
   clearTransaksiFormInputs();
@@ -968,7 +969,6 @@ function resetTransaksiForm() {
   $('#btnTampilFormTransaksi').parentElement.style.display = 'flex';
 }
 
-// PERUBAHAN: renderTransaksi diperbarui untuk kolom %
 function renderTransaksi(filterStart, filterEnd, search=''){
   const tbody = $('#tableTrans tbody'); tbody.innerHTML='';
   let filtered = transaksi.slice();
@@ -977,14 +977,13 @@ function renderTransaksi(filterStart, filterEnd, search=''){
   }
   if(search) filtered = filtered.filter(t => t.nama.toLowerCase().includes(search.toLowerCase()));
   
-  filtered.sort((a, b) => {
-    if (!b || !b.tanggal) return 1; 
-    if (!a || !a.tanggal) return -1;
-    return b.tanggal.localeCompare(a.tanggal);
-  });
+  // PERUBAHAN: Hapus .reverse()
+  // Array sudah diurutkan dengan 'unshift' saat menambah data baru.
+  // filtered.reverse(); // <--- DIHAPUS
 
   filtered.forEach((t)=>{
     if (!t) return; 
+    // Indeks asli dicari di array 'transaksi' utama, ini tetap aman
     const originalIndex = transaksi.findIndex(item => item === t);
     
     const tanggal = t.tanggal || 'N/A';
@@ -992,16 +991,20 @@ function renderTransaksi(filterStart, filterEnd, search=''){
     const nama = t.nama || 'Tanpa Nama';
     const hargaText = t.hargaText || 'Rp 0';
     
-    // Tentukan % yang akan ditampilkan
     const persenDisplay = (t.jenis === 'Barang' ? t.persenUntung : t.persen) || '-';
 
     const tr = document.createElement('tr');
+    
+    if (t.jenis === 'Barang') {
+      tr.classList.add('jenis-barang');
+    }
+    
     tr.innerHTML = `<td>${tanggal}</td>
       <td>${jenis}</td>
       <td>${nama}</td>
       <td>${hargaText}</td>
       <td>${t.mekanik || '-'}</td>
-      <td>${persenDisplay}</td> <!-- DIPERBARUI -->
+      <td>${persenDisplay}</td>
       <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td>
       <td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>
       <td class="actions">
@@ -1011,10 +1014,8 @@ function renderTransaksi(filterStart, filterEnd, search=''){
     tbody.appendChild(tr);
   });
 }
-// AKHIR PERUBAHAN
 
 
-// PERUBAHAN: tableTrans 'edit' click handler diperbarui
 $('#tableTrans').addEventListener('click', (e)=>{
   const btn = e.target.closest('button');
   if(!btn) return;
@@ -1034,7 +1035,7 @@ $('#tableTrans').addEventListener('click', (e)=>{
     $('#transHarga').value = t.hargaText;
     $('#transMekanik').value = t.mekanik || '';
     $('#transPersen').value = t.persen || '';
-    $('#transPersenUntung').value = t.persenUntung || ''; // TAMBAHKAN
+    $('#transPersenUntung').value = t.persenUntung || ''; 
     
     applyJenisVisibility();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -1062,7 +1063,6 @@ $('#tableTrans').addEventListener('click', (e)=>{
     });
   }
 });
-// AKHIR PERUBAHAN
 
 $('#btnApplyFilter').addEventListener('click', ()=>{
   const d1 = $('#filterDari').value, d2 = $('#filterSampai').value;
@@ -1096,14 +1096,12 @@ barangForm.addEventListener('submit', (e)=>{
     barang.push(data);
     Swal.fire('Berhasil','Barang ditambahkan','success');
   } else {
-    // PERUBAHAN: Panggil fungsi update Firebase
     const oldData = barang[editBarangIndex];
-    data.firebaseId = oldData.firebaseId; // Ambil firebaseId
+    data.firebaseId = oldData.firebaseId; 
     
     if (window.updateBarangDiFirebase && data.firebaseId) {
       window.updateBarangDiFirebase(data.firebaseId, data);
     }
-    // AKHIR PERUBAHAN
     
     barang[editBarangIndex] = data;
     editBarangIndex = null;
@@ -1244,14 +1242,12 @@ jasaForm.addEventListener('submit',(e)=>{
     jasa.push(data);
     Swal.fire('Berhasil','Jasa ditambahkan','success');
   } else {
-    // PERUBAHAN: Panggil fungsi update Firebase
     const oldData = jasa[editJasaIndex];
-    data.firebaseId = oldData.firebaseId; // Ambil firebaseId
+    data.firebaseId = oldData.firebaseId; 
     
     if (window.updateJasaDiFirebase && data.firebaseId) {
       window.updateJasaDiFirebase(data.firebaseId, data);
     }
-    // AKHIR PERUBAHAN
     
     jasa[editJasaIndex] = data;
     editJasaIndex = null;
@@ -1375,19 +1371,16 @@ function renderLaporan(dari,sampai){
   const tbody = $('#tableLaporan tbody'); tbody.innerHTML='';
   let totalBengkel=0, totalMekanik=0, totalAll=0;
   
-  // PERUBAHAN: totalBengkel (total profit) dihitung dengan benar
   filtered.forEach(t=>{
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${t.tanggal}</td><td>${t.jenis}</td><td>${t.nama}</td><td>${t.hargaText}</td><td>${t.mekanik || '-'}</td>
       <td>${t.bagianMekanik? formatCurrency(t.bagianMekanik): '-'}</td><td>${t.bagianBengkel? formatCurrency(t.bagianBengkel): '-'}</td>`;
     tbody.appendChild(tr);
     
-    // t.bagianBengkel sekarang berisi profit barang ATAU share jasa
     totalBengkel += Number(t.bagianBengkel || 0); 
     totalMekanik += Number(t.bagianMekanik || 0);
     totalAll += Number(t.hargaNum || 0);
   });
-  // AKHIR PERUBAHAN
   
   const perMekanik = {};
   mekanik.forEach(m=>perMekanik[m]=0);
@@ -1446,50 +1439,38 @@ $('#btnExportLaporan').addEventListener('click', ()=>{
 /* ---------------------------
   Dashboard rendering
   --------------------------- */
-// PERUBAHAN: Fungsi renderDashboard diperbarui
 function renderDashboard(){
   const rentang = $('#dashboardRentang').value;
   const { dari: tglDari, sampai: tglSampai } = getTanggalRentang(rentang);
   
-  let totalRentang=0, totalMekanik=0, totalBengkelJasa = 0, totalKeuntunganBarang = 0; // Pisahkan keuntungan barang
+  let totalRentang=0, totalMekanik=0, totalBengkelJasa = 0, totalKeuntunganBarang = 0; 
 
-  // Setel label kartu (dipindahkan ke sini agar konsisten)
-  $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-wallet"></i> Keuntungan Bersih (Barang)`; // Label diubah
+  $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-wallet"></i> Keuntungan Bersih (Barang)`; 
   $('#cardBengkel').previousElementSibling.innerHTML = `<i class="fa-solid fa-store"></i> Bagian Bengkel (Jasa)`;
   $('#cardMekanikTotal').previousElementSibling.innerHTML = `<i class="fa-solid fa-users-gear"></i> Bagian Mekanik (Jasa)`;
   $('#cardGrandTotal').previousElementSibling.innerHTML = `<i class="fa-solid fa-cash-register"></i> Total Transaksi (Rentang)`;
 
   transaksi.forEach(t => {
     if (t && t.tanggal && t.tanggal >= tglDari && t.tanggal <= tglSampai){
-      totalRentang += Number(t.hargaNum || 0); // Total penjualan kotor
-      totalMekanik += Number(t.bagianMekanik || 0); // Total bagian mekanik (hanya dari Jasa)
+      totalRentang += Number(t.hargaNum || 0); 
+      totalMekanik += Number(t.bagianMekanik || 0); 
       
-      // Hitung HANYA bagian bengkel dari JASA
       if (t.jenis === 'Jasa') {
         totalBengkelJasa += Number(t.bagianBengkel || 0);
       } 
-      // Hitung HANYA keuntungan dari BARANG
       else if (t.jenis === 'Barang') {
-        totalKeuntunganBarang += Number(t.bagianBengkel || 0); // 'bagianBengkel' dipakai untuk profit barang
+        totalKeuntunganBarang += Number(t.bagianBengkel || 0); 
       }
     }
   });
   
-  // Kartu 1: Keuntungan Bersih (HANYA Barang)
   $('#cardTotalHari').innerText = formatCurrency(totalKeuntunganBarang); 
-  
-  // Kartu 2: Bagian Bengkel (HANYA Jasa)
   $('#cardBengkel').innerText = formatCurrency(totalBengkelJasa);
-  
-  // Kartu 3: Bagian Mekanik (HANYA Jasa)
   $('#cardMekanikTotal').innerText = formatCurrency(totalMekanik);
-  
-  // Kartu 4: Total Transaksi (Penjualan Kotor)
   $('#cardGrandTotal').innerText = formatCurrency(totalRentang);
   
   renderMekanikList(tglDari, tglSampai);
 }
-// AKHIR PERUBAHAN
 
 /* ---------------------------
   Initial rendering
@@ -1519,7 +1500,6 @@ setInterval(()=>{
 </script>
 
 <script type="module">
-  // PERUBAHAN: Import 'updateDoc'
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
@@ -1562,7 +1542,7 @@ setInterval(()=>{
   async function updateTransaksiDiFirebase(id, data) {
     try {
       const dataToSave = { ...data };
-      delete dataToSave.firebaseId; // Jangan simpan ID di dalam dokumen
+      delete dataToSave.firebaseId; 
       const transDocRef = doc(db, "transaksi", id);
       await updateDoc(transDocRef, dataToSave);
     } catch (e) {
@@ -1692,7 +1672,6 @@ setInterval(()=>{
   window.hapusTransaksiDariFirebase = hapusTransaksiDariFirebase;
   window.hapusBarangDariFirebase = hapusBarangDariFirebase;
   window.hapusJasaDariFirebase = hapusJasaDariFirebase;
-  // PERUBAHAN: Ekspos fungsi update
   window.updateTransaksiDiFirebase = updateTransaksiDiFirebase;
   window.updateBarangDiFirebase = updateBarangDiFirebase;
   window.updateJasaDiFirebase = updateJasaDiFirebase;
@@ -1703,13 +1682,12 @@ setInterval(()=>{
     console.log("Memeriksa data lama (lebih dari 60 hari)...");
     const batasTanggal = getISODateDaysAgo(60);
     
-    // Pisahkan data lama dan baru
     const transaksiLama = transaksi.filter(t => t && t.tanggal < batasTanggal);
     const transaksiBaru = transaksi.filter(t => !t || t.tanggal >= batasTanggal);
 
     if (transaksiLama.length === 0) {
       console.log("Tidak ada data lama yang ditemukan.");
-      return; // Tidak ada yang perlu dihapus
+      return; 
     }
 
     console.log(`Menemukan ${transaksiLama.length} data lama untuk dihapus...`);
