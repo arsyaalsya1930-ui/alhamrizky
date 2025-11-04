@@ -251,8 +251,8 @@
   
   /* --- PERUBAHAN UNTUK MEMPERTEGAS HEADER TABEL --- */
   th{
-    background: #5c7abf; /* Latar belakang lebih tegas */
-    color: #ffffff;      /* Warna teks lebih gelap */
+    background: #f4f7fa; /* Latar belakang lebih tegas */
+    color: #334155;      /* Warna teks lebih gelap */
     font-weight: 700;     /* Teks lebih tebal */
     text-transform: uppercase;
     font-size: 12px;      /* Ukuran font sedikit lebih besar */
@@ -308,17 +308,35 @@
       <button id="btnHapusLokal" class="ghost" style="flex:1;"><i class="fa-solid fa-trash"></i> Hapus Data Lokal</button>
     </div>
     
+    <!-- PERUBAHAN: Filter Dashboard diperbarui -->
     <div class="card" style="margin-bottom: 12px; padding: 12px; display: flex; gap: 10px; align-items: center;">
         <label for="dashboardRentang" style="margin-bottom: 0; font-weight: 600; color: var(--muted);">Tampilkan Rentang:</label>
         <select id="dashboardRentang" style="flex: 1; margin-bottom: 0;">
+            <option value="1d">1 Hari Ini</option>
             <option value="3d">3 Hari Terakhir</option>
             <option value="7d">1 Minggu Terakhir</option>
             <option value="30d" selected>1 Bulan Terakhir</option>
             <option value="all">Semua Waktu</option>
+            <option value="custom">Tanggal Custom...</option>
         </select>
     </div>
+    <!-- PERUBAHAN: Area custom date picker untuk Dashboard -->
+    <div id="dashboardCustomArea" class="card" style="display:none; margin-bottom: 12px; padding: 12px;">
+      <div class="row">
+        <div class="col">
+          <label>Dari Tanggal</label>
+          <input type="date" id="dashDari" style="margin-bottom: 0;">
+        </div>
+        <div class="col">
+          <label>Sampai Tanggal</label>
+          <input type="date" id="dashSampai" style="margin-bottom: 0;">
+        </div>
+      </div>
+      <button id="btnApplyDashFilter" style="width: 100%; margin-top: 10px;">Terapkan Custom</button>
+    </div>
+    <!-- AKHIR PERUBAHAN -->
+
     <div class="grid" id="dashboardCards">
-      <!-- PERUBAHAN: Label kartu diubah agar lebih spesifik -->
       <div class="card">
         <h3><i class="fa-solid fa-wallet"></i>Keuntungan Bersih (Barang)</h3>
         <p id="cardTotalHari">Rp 0</p>
@@ -335,7 +353,6 @@
         <h3><i class="fa-solid fa-cash-register"></i>Total Transaksi (Rentang)</h3>
         <p id="cardGrandTotal">Rp 0</p>
       </div>
-      <!-- AKHIR PERUBAHAN -->
     </div>
 
     <div style="margin-bottom:10px">
@@ -385,12 +402,10 @@
         <input type="tel" id="transPersen" placeholder="Contoh: 10" inputmode="numeric">
       </div>
 
-      <!-- PERUBAHAN: Bagian Keuntungan (HANYA UNTUK BARANG) -->
       <div id="transBarangSection" style="display:none;">
           <label style="margin-top: 10px;">Persentase Keuntungan Bengkel (%) (opsional)</label>
           <input type="tel" id="transPersenUntung" placeholder="Contoh: 10" inputmode="numeric">
       </div>
-      <!-- AKHIR PERUBAHAN -->
 
       <!-- Hasil Kalkulasi JASA -->
       <div id="transCalcResult" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
@@ -404,14 +419,12 @@
         </div>
       </div>
 
-      <!-- PERUBAHAN: Hasil Kalkulasi BARANG -->
       <div id="transCalcResultBarang" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; display: none; border: 1px solid var(--border);">
           <div style="display: flex; justify-content: space-between; font-size: 14px;">
               <span style="color: var(--muted);">Keuntungan Bengkel:</span>
               <strong id="calcUntungBengkel" style="color: var(--primary-1);">Rp 0</strong>
           </div>
       </div>
-      <!-- AKHIR PERUBAHAN -->
 
 
       <div style="display:flex;gap:8px;margin-top:15px">
@@ -420,15 +433,35 @@
       </div>
     </form>
 
-    <div class="controls">
-      <input type="date" id="filterDari">
-      <input type="date" id="filterSampai">
-      <button class="ghost small" id="btnApplyFilter">Terapkan</button>
-      <button class="ghost small" id="btnResetFilter">Reset</button>
+    <!-- PERUBAHAN: Filter Transaksi diperbarui -->
+    <div class="card" style="margin-bottom: 12px; padding: 12px;">
+      <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+        <label for="filterRentang" style="margin-bottom: 0; font-weight: 600; color: var(--muted);">Filter Rentang:</label>
+        <select id="filterRentang" style="flex: 1; margin-bottom: 0;">
+          <!-- PERUBAHAN: 'selected' dipindahkan ke '1d' -->
+          <option value="1d" selected>1 Hari Ini</option>
+          <option value="3d">3 Hari Terakhir</option>
+          <option value="7d">1 Minggu Terakhir</option>
+          <!-- PERUBAHAN: 'selected' dihapus dari '30d' -->
+          <option value="30d">1 Bulan Terakhir</option>
+          <option value="all">Semua Waktu</option>
+          <option value="custom">Tanggal Custom...</option>
+        </select>
+      </div>
+      
+      <div id="transaksiCustomArea" class="controls" style="display:none; margin-bottom: 10px;">
+        <input type="date" id="filterDari">
+        <input type="date" id="filterSampai">
+        <button class="ghost small" id="btnApplyFilter">Terapkan</button>
+      </div>
+
+      <div class="controls" style="margin-bottom: 0;">
+        <input type="text" id="searchTrans" placeholder="Cari nama...">
+        <button class="ghost small" id="btnResetFilter" style="flex-shrink: 0;">Reset Filter</button>
+      </div>
     </div>
-    <div class="controls" style="margin-top: -2px;">
-      <input type="text" id="searchTrans" placeholder="Cari nama...">
-    </div>
+    <!-- AKHIR PERUBAHAN -->
+
 
     <div style="overflow:auto">
       <table id="tableTrans">
@@ -571,8 +604,12 @@ function getISODateDaysAgo(days) {
   return date.toISOString().split('T')[0];
 }
 
+// PERUBAHAN: Penambahan case '1d'
 function getTanggalRentang(rentang) {
   const sampai = todayISO();
+  if (rentang === '1d') {
+    return { dari: todayISO(), sampai };
+  }
   if (rentang === '3d') {
     return { dari: getISODateDaysAgo(2), sampai }; 
   }
@@ -649,8 +686,11 @@ tabs.forEach(t => t.addEventListener('click', ()=> {
   Initialize defaults
   --------------------------- */
 $('#transTanggal').value = todayISO();
-$('#filterDari').value = '';
-$('#filterSampai').value = '';
+$('#filterDari').value = getISODateDaysAgo(6); // Default custom
+$('#filterSampai').value = todayISO(); // Default custom
+$('#dashDari').value = getISODateDaysAgo(6); // Default custom
+$('#dashSampai').value = todayISO(); // Default custom
+
 
 /* ---------------------------
   Dashboard Sync/Clear Buttons
@@ -732,7 +772,9 @@ function renderMekanikList(tglDari, tglSampai){
   
   area.innerHTML = html;
   
-  const rentangTeks = $('#dashboardRentang').options[$('#dashboardRentang').selectedIndex].text;
+  // PERUBAHAN: Update judul list mekanik berdasarkan rentang
+  // FIX: Menggunakan .textContent bukan .text()
+  const rentangTeks = $('#dashboardRentang option:checked').textContent;
   $('#mekanikListTitle').innerText = `Pendapatan Per Mekanik (${rentangTeks})`;
 }
 
@@ -928,7 +970,6 @@ transForm.addEventListener('submit', (e)=>{
     if (window.simpanKeFirebase) {
       window.simpanKeFirebase(data);
     }
-    // PERUBAHAN: Gunakan unshift() untuk menambah ke awal array
     transaksi.unshift(data);
     Swal.fire('Berhasil','Transaksi ditambahkan','success');
   } else {
@@ -948,7 +989,7 @@ transForm.addEventListener('submit', (e)=>{
   
   resetTransaksiForm();
   
-  renderTransaksi();
+  applyTransaksiFilters(); // PERUBAHAN
   renderDashboard();
 });
 
@@ -969,21 +1010,39 @@ function resetTransaksiForm() {
   $('#btnTampilFormTransaksi').parentElement.style.display = 'flex';
 }
 
+// PERUBAHAN: Fungsi filter utama untuk Transaksi
+function applyTransaksiFilters() {
+  const rentang = $('#filterRentang').value;
+  const customArea = $('#transaksiCustomArea');
+  const search = $('#searchTrans').value;
+
+  if (rentang === 'custom') {
+    customArea.style.display = 'flex';
+    // Ambil tanggal dari custom picker
+    const d1 = $('#filterDari').value;
+    const d2 = $('#filterSampai').value;
+    renderTransaksi(d1 || null, d2 || null, search); 
+  } else {
+    customArea.style.display = 'none';
+    const { dari, sampai } = getTanggalRentang(rentang);
+    renderTransaksi(dari, sampai, search);
+  }
+}
+
 function renderTransaksi(filterStart, filterEnd, search=''){
   const tbody = $('#tableTrans tbody'); tbody.innerHTML='';
   let filtered = transaksi.slice();
+  
   if(filterStart && filterEnd){
     filtered = filtered.filter(t => t.tanggal >= filterStart && t.tanggal <= filterEnd);
   }
   if(search) filtered = filtered.filter(t => t.nama.toLowerCase().includes(search.toLowerCase()));
   
-  // PERUBAHAN: Hapus .reverse()
-  // Array sudah diurutkan dengan 'unshift' saat menambah data baru.
-  // filtered.reverse(); // <--- DIHAPUS
+  // Sorting (unshift sudah menangani data baru, sort dari Firebase menangani data lama)
+  // Tidak perlu reverse()
 
   filtered.forEach((t)=>{
     if (!t) return; 
-    // Indeks asli dicari di array 'transaksi' utama, ini tetap aman
     const originalIndex = transaksi.findIndex(item => item === t);
     
     const tanggal = t.tanggal || 'N/A';
@@ -1056,7 +1115,7 @@ $('#tableTrans').addEventListener('click', (e)=>{
         
         transaksi.splice(i,1);
         localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
-        renderTransaksi($('#filterDari').value, $('#filterSampai').value, $('#searchTrans').value);
+        applyTransaksiFilters(); // PERUBAHAN
         renderDashboard();
         Swal.fire('Terhapus','Transaksi dihapus','success');
       }
@@ -1064,15 +1123,18 @@ $('#tableTrans').addEventListener('click', (e)=>{
   }
 });
 
-$('#btnApplyFilter').addEventListener('click', ()=>{
-  const d1 = $('#filterDari').value, d2 = $('#filterSampai').value;
-  renderTransaksi(d1 && d2 ? d1 : null, d1 && d2 ? d2 : null, $('#searchTrans').value);
-});
+// PERUBAHAN: Listener filter Transaksi
+$('#filterRentang').addEventListener('change', applyTransaksiFilters);
+$('#btnApplyFilter').addEventListener('click', applyTransaksiFilters);
 $('#btnResetFilter').addEventListener('click', ()=>{
-  $('#filterDari').value='';$('#filterSampai').value='';$('#searchTrans').value='';
-  renderTransaksi();
+  // PERUBAHAN: Reset value diubah ke '1d'
+  $('#filterRentang').value = '1d'; // Reset dropdown
+  $('#filterDari').value = getISODateDaysAgo(6);
+  $('#filterSampai').value = todayISO();
+  $('#searchTrans').value = '';
+  applyTransaksiFilters();
 });
-$('#searchTrans').addEventListener('input', ()=>renderTransaksi($('#filterDari').value, $('#filterSampai').value, $('#searchTrans').value));
+$('#searchTrans').addEventListener('input', applyTransaksiFilters);
 
   /* ---------------------------
   Barang
@@ -1439,10 +1501,9 @@ $('#btnExportLaporan').addEventListener('click', ()=>{
 /* ---------------------------
   Dashboard rendering
   --------------------------- */
-function renderDashboard(){
-  const rentang = $('#dashboardRentang').value;
-  const { dari: tglDari, sampai: tglSampai } = getTanggalRentang(rentang);
-  
+// PERUBAHAN: Fungsi ini dipecah
+// updateDashboardData HANYA me-render data
+function updateDashboardData(tglDari, tglSampai) {
   let totalRentang=0, totalMekanik=0, totalBengkelJasa = 0, totalKeuntunganBarang = 0; 
 
   $('#cardTotalHari').previousElementSibling.innerHTML = `<i class="fa-solid fa-wallet"></i> Keuntungan Bersih (Barang)`; 
@@ -1472,20 +1533,48 @@ function renderDashboard(){
   renderMekanikList(tglDari, tglSampai);
 }
 
+// renderDashboard sekarang menjadi controller UI
+function renderDashboard(){
+  const rentang = $('#dashboardRentang').value;
+  const customArea = $('#dashboardCustomArea');
+
+  if (rentang === 'custom') {
+    customArea.style.display = 'block';
+  } else {
+    customArea.style.display = 'none';
+    const { dari: tglDari, sampai: tglSampai } = getTanggalRentang(rentang);
+    updateDashboardData(tglDari, tglSampai);
+  }
+}
+
+// Listener baru untuk tombol custom dashboard
+$('#btnApplyDashFilter').addEventListener('click', () => {
+  const tglDari = $('#dashDari').value;
+  const tglSampai = $('#dashSampai').value;
+  if (!tglDari || !tglSampai || tglDari > tglSampai) {
+    Swal.fire('Perhatian', 'Rentang tanggal custom tidak valid', 'warning');
+    return;
+  }
+  updateDashboardData(tglDari, tglSampai);
+  // Update judul list mekanik
+  $('#mekanikListTitle').innerText = `Pendapatan Per Mekanik (Custom)`;
+});
+
 /* ---------------------------
   Initial rendering
   --------------------------- */
 renderMekanikOptions();
-renderTransaksi();
+applyTransaksiFilters(); // PERUBAHAN
 renderBarang();
 renderJasa();
 renderDatalist();
 renderDashboard(); 
 
+// PERUBAHAN: Listener Dashboard diupdate
 $('#dashboardRentang').addEventListener('change', renderDashboard);
 
 
-$('footer').innerHTML = `&copy; ${new Date().getFullYear()} V1.2 Bengkel Promotor. Dibuat untuk pribadi.`;
+$('footer').innerHTML = `&copy; ${new Date().getFullYear()} V1.3 Bengkel Promotor.`;
 
 
 /* ---------------------------
@@ -1596,9 +1685,16 @@ setInterval(()=>{
       data.firebaseId = docu.id;
       transaksi.push(data);
     });
+    
+    transaksi.sort((a, b) => {
+      if (!b || !b.tanggal) return 1;
+      if (!a || !a.tanggal) return -1;
+      return b.tanggal.localeCompare(a.tanggal);
+    });
+
     localStorage.setItem(KEY.trans, JSON.stringify(transaksi));
     if (showSuccess) {
-      renderTransaksi();
+      applyTransaksiFilters(); // PERUBAHAN
       Swal.fire("Sinkron Berhasil!", "Data transaksi berhasil diambil dari cloud!", "success");
     }
   }
@@ -1649,7 +1745,7 @@ setInterval(()=>{
 
       await hapusDataLama();
 
-      renderTransaksi();
+      applyTransaksiFilters(); // PERUBAHAN
       renderBarang();
       renderJasa();
       renderDashboard();
@@ -1749,7 +1845,7 @@ setInterval(()=>{
 
       await hapusDataLama(); 
 
-      renderTransaksi();
+      applyTransaksiFilters(); // PERUBAHAN
       renderBarang();
       renderJasa();
       renderDashboard();
@@ -1759,7 +1855,7 @@ setInterval(()=>{
       console.error("Gagal sinkron otomatis:", e);
       Swal.fire("Gagal Sinkron", "Gagal mengambil data cloud. Memuat data lokal yang ada.", "error");
       
-      renderTransaksi();
+      applyTransaksiFilters(); // PERUBAHAN
       renderBarang();
       renderJasa();
       renderDashboard();
